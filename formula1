@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Scuderia Ferrari in Formula 1 | Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0e10;--card:#17171a;--ink:#f4f1ea;--mut:#a7a39a;--line:#2c2c31;--red:#e10600;--ac:#e10600;--ai:#fff;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body[data-p=scuderia]{--ac:#ffd100;--ai:#111}
+body[data-p=piloti]{--ac:#f4f1ea;--ai:#111}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Barlow,system-ui,sans-serif}
+h1,h2,h3,.big,.k b{font-family:'Barlow Condensed','Arial Narrow',sans-serif;margin:0}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:#0e0e10ee;border-bottom:3px solid var(--ac);transition:border-color .3s}
+.hd{max-width:1060px;margin:0 auto;padding:10px 16px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.hd strong{font:800 1.3rem 'Barlow Condensed',sans-serif;letter-spacing:.02em}
+nav{display:flex;gap:6px;margin-left:auto;overflow-x:auto}
+nav button{background:#222226;color:var(--mut);border:0;border-radius:8px 8px 0 0;padding:8px 16px;font:600 1rem Barlow,sans-serif;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--ac);color:var(--ai)}
+:focus-visible{outline:3px solid var(--y,#ffd100);outline-offset:2px}
+main{max-width:1060px;margin:0 auto;padding:22px 16px 50px}
+.pg{display:none}.pg.on{display:block}
+.cover{min-height:60vh;display:flex;flex-direction:column;justify-content:center}
+.big{font-size:clamp(6rem,26vw,13rem);font-weight:800;line-height:.9;color:var(--red)}
+.cover h1{font-size:clamp(2rem,6vw,3.6rem);font-weight:800}
+.cover p{color:var(--mut);max-width:56ch}
+.go{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.go button{background:var(--red);color:#fff;border:0;border-radius:10px;padding:11px 20px;font:700 1rem Barlow,sans-serif;cursor:pointer}
+.go button:nth-child(2){background:#ffd100;color:#111}.go button:nth-child(3){background:#f4f1ea;color:#111}
+.lay{display:grid;grid-template-columns:200px 1fr;gap:16px}
+.ks{display:grid;gap:12px;align-content:start}
+.k{background:var(--card);border:1px solid var(--line)}
+.k b{display:block;font-size:2.8rem;font-weight:700;text-align:center;padding:10px 6px 4px}
+.k span{display:block;background:var(--ac);color:var(--ai);text-align:center;font-weight:600;padding:3px 6px;font-size:.95rem}
+.cs{display:grid;gap:16px;align-content:start}
+.pn{background:var(--card);border:1px solid var(--line)}
+.pn h3{background:var(--ac);color:var(--ai);padding:8px 14px;font-size:1.15rem;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.pb{padding:12px 16px 14px}
+.br{display:grid;grid-template-columns:140px 1fr 36px;gap:10px;align-items:center;margin:7px 0;font-size:.95rem;cursor:default}
+.br i{display:block;height:16px;background:var(--ac);width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.br.sel{color:#ffd100;font-weight:600}.br.sel i{background:#ffd100}
+.br em{font-style:normal;text-align:right;font-weight:600}
+.sw{display:flex;gap:6px}.sw button,select{background:#222226;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px 12px;font:600 .9rem Barlow,sans-serif;cursor:pointer}
+.sw button[aria-pressed=true]{background:#111;color:var(--ac);border-color:var(--ac)}
+.note{color:var(--mut);font-size:.88rem;margin:8px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips span{background:#222226;border-left:4px solid var(--ac);padding:3px 12px;font-weight:600}
+.tl{margin:0;padding:0;list-style:none;border-left:3px solid var(--ac)}
+.tl li{padding:0 0 12px 16px;position:relative}.tl li:before{content:"";position:absolute;left:-9px;top:6px;width:15px;height:15px;background:var(--bg);border:3px solid var(--ac);border-radius:50%}
+.tl b{color:var(--ac)}
+.sc{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px;text-align:center}
+.sc div{background:#111;padding:10px 4px}.sc b{display:block;font:700 1.9rem 'Barlow Condensed',sans-serif;color:var(--ac)}.sc span{font-size:.8rem;color:var(--mut)}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.92rem}th,td{padding:7px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}th{color:var(--ac)}
+tbody tr{cursor:pointer}tbody tr:hover,tbody tr.sel{background:#232327}tbody tr.sel td:first-child{color:#ffd100;font-weight:600}
+#tip{position:fixed;display:none;z-index:30;pointer-events:none;max-width:240px;background:#111;border:1px solid var(--ac);border-top:4px solid var(--ac);padding:8px 12px;font-size:.9rem;line-height:1.45;box-shadow:0 8px 24px #0009}#tip b{font:700 1.15rem 'Barlow Condensed',sans-serif;color:var(--ac)}
+footer{max-width:1060px;margin:0 auto;padding:0 16px 40px;color:var(--mut);font-size:.85rem}
+@media(max-width:760px){.lay{grid-template-columns:1fr}.ks{grid-template-columns:repeat(2,1fr)}.br{grid-template-columns:110px 1fr 34px}nav{margin-left:0;width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body data-p="copertina">
+<header><div class="hd"><strong>Scuderia Ferrari | Formula 1</strong>
+<nav aria-label="Pagine">
+<button data-p="copertina" class="on">Copertina</button><button data-p="corse">Corse</button><button data-p="scuderia">Scuderia</button><button data-p="piloti">Piloti</button>
+</nav></div></header>
+<main>
+
+<section class="pg on" id="copertina"><div class="cover">
+<div class="big" id="c250">0</div>
+<h1>vittorie in Formula 1</h1>
+<p>Analisi della Scuderia Ferrari dal 1950: le corse e i circuiti, i titoli della scuderia e i piloti che hanno vinto con il Cavallino. Dati aggiornati a luglio 2026.</p>
+<div class="go"><button data-p="corse">Corse</button><button data-p="scuderia">Scuderia</button><button data-p="piloti">Piloti</button></div>
+</div></section>
+
+<section class="pg" id="corse"><div class="lay">
+<div class="ks">
+<div class="k"><b>250</b><span>Vittorie</span></div>
+<div class="k"><b>40</b><span>Piloti vincitori</span></div>
+<div class="k"><b>20</b><span>Vittorie a Monza</span></div>
+<div class="k"><b>16</b><span>Vittorie a Silverstone</span></div>
+</div>
+<div class="cs">
+<div class="pn"><h3>Vittorie per <span class="sw" id="sw1"><button data-v="c" aria-pressed="true">circuito</button><button data-v="p" aria-pressed="false">paese</button></span></h3><div class="pb"><div id="ch1"></div><p class="note" id="n1"></p></div></div>
+<div class="pn"><h3>Tappe della storia</h3><div class="pb"><ol class="tl">
+<li><b>1950</b> Debutto in campionato a Monaco: Ascari chiude secondo.</li>
+<li><b>1951</b> A Silverstone arriva la prima vittoria, con José Froilán González.</li>
+<li><b>1951</b> Ascari vince a Monza, la prima delle 20 vittorie sul circuito di casa.</li>
+<li><b>2024</b> Leclerc firma l'ultima vittoria di Monza.</li>
+<li><b>2026</b> A Silverstone Leclerc conquista la 250ª vittoria.</li>
+</ol></div></div>
+</div></div></section>
+
+<section class="pg" id="scuderia"><div class="lay">
+<div class="ks">
+<div class="k"><b>16</b><span>Titoli costruttori</span></div>
+<div class="k"><b>15</b><span>Titoli piloti</span></div>
+<div class="k"><b>250</b><span>Vittorie</span></div>
+<div class="k"><b>9</b><span>Piloti campioni</span></div>
+</div>
+<div class="cs">
+<div class="pn"><h3>Titoli costruttori per decennio</h3><div class="pb"><div id="ch2"></div></div></div>
+<div class="pn"><h3>Vittorie: le tre scuderie con più successi</h3><div class="pb"><div id="ch3"></div><p class="note">Ferrari davanti a McLaren e Mercedes.</p></div></div>
+<div class="pn"><h3>Anni dei titoli costruttori</h3><div class="pb"><div class="chips"><span>1961</span><span>1964</span><span>1975</span><span>1976</span><span>1977</span><span>1979</span><span>1982</span><span>1983</span><span>1999</span><span>2000</span><span>2001</span><span>2002</span><span>2003</span><span>2004</span><span>2007</span><span>2008</span></div></div></div>
+</div></div></section>
+
+<section class="pg" id="piloti"><div class="lay">
+<div class="ks">
+<div class="k"><b>40</b><span>Piloti vincitori</span></div>
+<div class="k"><b>15</b><span>Titoli piloti</span></div>
+<div class="k"><b>72</b><span>Vittorie di Schumacher</span></div>
+<div class="k"><b>1</b><span>Vittoria di Hamilton</span></div>
+</div>
+<div class="cs">
+<div class="pn"><h3>Vittorie per pilota <select id="ps" aria-label="Scegli un pilota"></select></h3><div class="pb"><div id="ch4"></div></div></div>
+<div class="pn"><h3 id="sh">Scheda pilota</h3><div class="pb"><div class="sc" id="card"></div><p class="note">n.d. indica un dato non disponibile nelle fonti usate.</p></div></div>
+<div class="pn"><h3>Dettaglio per pilota</h3><div class="pb tw"><table><thead><tr><th>Pilota</th><th>Nazionalità</th><th>Vittorie</th><th>Titoli</th><th>Gare</th><th>Pole</th></tr></thead><tbody id="tb"></tbody></table></div></div>
+</div></div></section>
+</main>
+<footer>Passa il mouse o tocca una barra per vedere il dettaglio. Fonti: Crash.net (luglio 2026), Autosport, Vavel. Le statistiche dei piloti riguardano solo le gare con la Ferrari. Le gare e le pole di Räikkönen, Leclerc e Hamilton non sono nelle fonti usate.</footer>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+// nome, nazionalità, vittorie, titoli, gare, pole, giri veloci, podi
+const D=[["Michael Schumacher","Tedesco",72,5,180,58,53,116],["Niki Lauda","Austriaco",15,2,57,23,12,32],["Sebastian Vettel","Tedesco",14,0,101,12,14,54],["Alberto Ascari","Italiano",13,2,27,13,10,17],["Felipe Massa","Brasiliano",11,0,139,15,14,36],["Fernando Alonso","Spagnolo",11,0,96,4,8,44],["Kimi Räikkönen","Finlandese",10,1,null,null,null,null],["Charles Leclerc","Monegasco",9,0,null,null,null,null],["Rubens Barrichello","Brasiliano",9,0,102,11,15,55],["Alain Prost","Francese",5,0,30,0,3,14],["Nigel Mansell","Britannico",3,0,31,3,6,11],["Lewis Hamilton","Britannico",1,0,null,null,null,null]];
+const CIR=[["Monza",20,"<b>Autodromo Nazionale di Monza</b><br>20 vittorie Ferrari<br>Prima: Ascari, 1951<br>Ultima: Leclerc, 2024"],["Silverstone",16,"<b>Silverstone Circuit</b><br>16 vittorie Ferrari<br>Prima: González, 1951<br>Ultima: Leclerc, 2026, la 250ª in assoluto<br>8 vittorie dal 2000"]],PAE=[["Germania",21,"<b>Germania</b><br>21 vittorie Ferrari<br>Con Hockenheim e Nürburgring"],["Italia",20,"<b>Italia</b><br>20 vittorie Ferrari"]];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+const X={"Michael Schumacher":"34 vittorie partendo dalla pole","Lewis Hamilton":"Prima vittoria in Ferrari: Barcellona 2026"};
+const tip=document.createElement('div');tip.id='tip';tip.setAttribute('role','tooltip');document.body.appendChild(tip);
+const place=e=>{const w=tip.offsetWidth,h=tip.offsetHeight;let x=e.clientX+14,y=e.clientY+14;if(x+w>innerWidth-8)x=innerWidth-w-8;if(y+h>innerHeight-8)y=e.clientY-h-14;tip.style.left=Math.max(8,x)+'px';tip.style.top=Math.max(8,y)+'px'};
+const showT=(t,e)=>{tip.innerHTML=t.dataset.tip;tip.style.display='block';place(e)};
+document.addEventListener('pointerover',e=>{const t=e.target.closest('[data-tip]');if(t)showT(t,e);else tip.style.display='none'});
+document.addEventListener('pointermove',e=>{if(tip.style.display==='block')place(e)});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('[data-tip]'))tip.style.display='none'});
+document.addEventListener('focusin',e=>{const t=e.target.closest('[data-tip]');if(t){const r=t.getBoundingClientRect();showT(t,{clientX:r.left+24,clientY:r.bottom-20})}});
+document.addEventListener('focusout',()=>tip.style.display='none');
+const bars=(el,rows,max,sel)=>{el.innerHTML=rows.map(r=>'<div class="br'+(sel===r[0]?' sel':'')+'" tabindex="0" data-tip="'+esc(r[2]||'<b>'+r[0]+'</b><br>'+r[1])+'"><span>'+r[0]+'</span><i data-w="'+(r[1]/max*100)+'"></i><em>'+r[1]+'</em></div>').join('')};
+const anim=()=>$$('.pg.on .br i').forEach(i=>{i.style.width='0';requestAnimationFrame(()=>requestAnimationFrame(()=>i.style.width=i.dataset.w+'%'))});
+function show(p){document.body.dataset.p=p;$$('.pg').forEach(s=>s.classList.toggle('on',s.id===p));$$('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));scrollTo(0,0);if(p==='copertina')cnt();anim()}
+$$('[data-p]').forEach(b=>{if(b.tagName==='BUTTON')b.onclick=()=>show(b.dataset.p)});
+function cnt(){const el=$('#c250'),t=performance.now();(function f(n){const p=Math.min((n-t)/1400,1);el.textContent=Math.round(250*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t)}
+// Corse
+function ch1(v){const c=v==='c';bars($('#ch1'),c?CIR:PAE,c?24:24);$('#n1').textContent=c?'Nürburgring e Spa-Francorchamps sono pari al terzo posto.':'Il Belgio è terzo, contando Spa-Francorchamps e Zolder.';$$('#sw1 button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===v));anim()}
+$$('#sw1 button').forEach(b=>b.onclick=()=>ch1(b.dataset.v));ch1('c');
+// Scuderia
+bars($('#ch2'),[["Anni 1960",2,"<b>Anni 1960</b><br>2 titoli: 1961, 1964"],["Anni 1970",4,"<b>Anni 1970</b><br>4 titoli: 1975, 1976, 1977, 1979"],["Anni 1980",2,"<b>Anni 1980</b><br>2 titoli: 1982, 1983"],["Anni 1990",1,"<b>Anni 1990</b><br>1 titolo: 1999"],["Anni 2000",7,"<b>Anni 2000</b><br>7 titoli: dal 2000 al 2004, 2007 e 2008"]],8);
+bars($('#ch3'),[["Ferrari",250,"<b>Ferrari</b><br>250 vittorie<br>40 piloti vincitori<br>Prima per vittorie"],["McLaren",203,"<b>McLaren</b><br>203 vittorie<br>Seconda per vittorie"],["Mercedes",138,"<b>Mercedes</b><br>138 vittorie<br>Terza per vittorie"]],250);
+// Piloti
+const n=v=>v==null?'n.d.':v;
+function pick(i){const d=D[i];bars($('#ch4'),D.map(x=>[x[0],x[2],'<b>'+x[0]+'</b><br>'+x[1]+'<br>Vittorie: '+x[2]+'<br>Titoli: '+x[3]+'<br>Gare: '+n(x[4])+'<br>Pole: '+n(x[5])+'<br>Giri veloci: '+n(x[6])+'<br>Podi: '+n(x[7])+(X[x[0]]?'<br>'+X[x[0]]:'')]),72,d[0]);$('#ps').value=i;$('#sh').textContent='Scheda: '+d[0];
+$('#card').innerHTML=[["Vittorie",d[2]],["Titoli",d[3]],["Gare",n(d[4])],["Pole",n(d[5])],["Giri veloci",n(d[6])],["Podi",n(d[7])]].map(x=>'<div><b>'+x[1]+'</b><span>'+x[0]+'</span></div>').join('');
+$$('#tb tr').forEach((r,j)=>r.classList.toggle('sel',j===i));anim()}
+$('#ps').innerHTML=D.map((d,i)=>'<option value="'+i+'">'+d[0]+'</option>').join('');$('#ps').onchange=e=>pick(+e.target.value);
+$('#tb').innerHTML=D.map((d,i)=>'<tr data-i="'+i+'"><td>'+d[0]+'</td><td>'+d[1]+'</td><td>'+d[2]+'</td><td>'+d[3]+'</td><td>'+n(d[4])+'</td><td>'+n(d[5])+'</td></tr>').join('');
+$$('#tb tr').forEach(r=>r.onclick=()=>pick(+r.dataset.i));pick(0);
+cnt();
+</script>
+</body>
+</html>
