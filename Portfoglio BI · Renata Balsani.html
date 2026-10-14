@@ -60,6 +60,7 @@ h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:22px;font-weight:700}
 .soon{border:2px dashed var(--line);border-radius:16px;padding:36px 24px;text-align:center;color:var(--mut)}
 .rv{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
 .rv.in{opacity:1;transform:none}
+.pj{display:grid;grid-template-columns:150px 1fr;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}.pf{background:#e10600;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}.pf b{font:800 3.4rem 'Bricolage Grotesque',sans-serif;line-height:1}.pc{padding:22px}.pc h3{font-size:1.4rem}.pc .w{color:var(--mut);margin:4px 0 10px;font-size:.95rem}.pt{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px}.pt span{border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.85rem}@media (max-width:600px){.pj{grid-template-columns:1fr}.pf{flex-direction:row;gap:10px}}
 footer{text-align:center;color:var(--mut);padding:30px 20px 50px;font-size:.9rem}
 @media (max-width:760px){.hero,.about{grid-template-columns:1fr}.ph{order:-1;max-width:260px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.bars i{height:var(--h)}}
@@ -161,7 +162,7 @@ footer{text-align:center;color:var(--mut);padding:30px 20px 50px;font-size:.9rem
 
 <section id="projects">
 <h2>Progetti</h2>
-<div class="soon rv">I progetti BI arrivano qui: dashboard, modelli dati e automazioni, con il problema, la soluzione e il risultato.</div>
+<article class="pj rv"><div class="pf" aria-hidden="true"><b>250</b><span>vittorie</span></div><div class="pc"><h3>Scuderia Ferrari in Formula 1</h3><p class="w">Dashboard interattiva in italiano, in stile Power BI</p><p>Analisi della storia della Ferrari dal 1950, in quattro pagine: Copertina, Corse, Scuderia e Piloti. Confronta circuiti e paesi, titoli per decennio e statistiche dei piloti, con un tooltip di dettaglio su ogni barra.</p><div class="pt"><span>Dashboard</span><span>Data storytelling</span><span>Tooltip</span><span>Dati fino a luglio 2026</span></div><a class="btn p" href="dashboard-ferrari.html" target="_blank" rel="noopener">Apri la dashboard</a></div></article>
 </section>
 <section id="contact">
 <h2>Contatti</h2>
