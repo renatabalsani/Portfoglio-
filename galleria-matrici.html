@@ -102,10 +102,10 @@ small.m{color:var(--muted);font-size:11px;margin-left:5px}
 <div class="tri"></div>
 <header class="hero"><div class="wrap">
 <h1>Galleria di matrici</h1>
-<p class="lead">Modelli di matrice per pannelli Power BI: espandibili, con formattazione condizionale, per crediti e FSC, backtesting, vendite e rischio clienti. Lo scenario è fittizio: una società italiana che distribuisce auto e moda.</p>
+<p class="lead">Modelli di tabelle e matrici che si possono costruire in Power BI: espandibili, con formattazione condizionale, barre, semafori e sparkline, per crediti e FSC, budget e consuntivo, vendite, KPI e rischio clienti. Lo scenario è fittizio: una società italiana che distribuisce auto e moda.</p>
 <ul class="facts"><li>9 modelli</li><li>Interattivi</li><li>Dati fittizi</li></ul>
 </div></header>
-<div class="tabsbar"><div class="wrap"><div class="tabs" role="tablist" aria-label="Matrici"><button role="tab" data-s="s1" aria-selected="false"><b>1</b>Espandibile</button><button role="tab" data-s="s2" aria-selected="false"><b>2</b>Utile per modello</button><button role="tab" data-s="s3" aria-selected="false"><b>3</b>Estratto conto</button><button role="tab" data-s="s4" aria-selected="false"><b>4</b>Backtesting</button><button role="tab" data-s="s5" aria-selected="false"><b>5</b>Roll rate</button><button role="tab" data-s="s6" aria-selected="false"><b>6</b>Coorti</button><button role="tab" data-s="s7" aria-selected="false"><b>7</b>Rischio clienti</button><button role="tab" data-s="s8" aria-selected="false"><b>8</b>Coorte × stock</button><button role="tab" data-s="s9" aria-selected="false"><b>9</b>Tre livelli</button></div></div></div>
+<div class="tabsbar"><div class="wrap"><div class="tabs" role="tablist" aria-label="Matrici"><button role="tab" data-s="s1" aria-selected="false"><b>1</b>Espandibile</button><button role="tab" data-s="s2" aria-selected="false"><b>2</b>Utile per modello</button><button role="tab" data-s="s3" aria-selected="false"><b>3</b>Estratto conto</button><button role="tab" data-s="s4" aria-selected="false"><b>4</b>Budget e consuntivo</button><button role="tab" data-s="s5" aria-selected="false"><b>5</b>Roll rate</button><button role="tab" data-s="s6" aria-selected="false"><b>6</b>Coorti</button><button role="tab" data-s="s7" aria-selected="false"><b>7</b>Rischio clienti</button><button role="tab" data-s="s8" aria-selected="false"><b>8</b>Scorecard KPI</button><button role="tab" data-s="s9" aria-selected="false"><b>9</b>Tre livelli</button></div></div></div>
 <main class="wrap">
 <div class="gbar">
 <label><input type="checkbox" id="cfToggle" checked> Formattazione condizionale</label>
@@ -127,7 +127,7 @@ small.m{color:var(--muted);font-size:11px;margin-left:5px}
 </ul></details>
 <section id="s1" class="card" hidden>
       <h2>Matrice espandibile con ultimo valore</h2>
-      <p class="why">Categoria e prodotto, con la somma del semestre e l’ultimo valore non vuoto, come il <code>LASTNONBLANK</code>. Quando l’ultimo mese è vuoto, la cella indica da quale mese proviene il valore. Cambia canale per vedere in azione la modalità di apertura: è la correzione che evita che la matrice si richiuda quando si clicca su un filtro.</p>
+      <p class="why">Categoria e prodotto, con la somma del semestre e l’ultimo valore non vuoto, come il <code>LASTNONBLANK</code>. Quando l’ultimo mese è vuoto, la cella indica da quale mese proviene il valore. I pulsanti Apri tutto e Chiudi tutto agiscono subito. Con Mantieni le aperture, cambiando canale le righe già aperte restano aperte: è la correzione che evita che la matrice si richiuda quando si clicca su un filtro.</p>
       <div class="ctl" id="c1"></div>
       <div class="tw"><table id="t1"></table></div>
     </section>
@@ -154,8 +154,8 @@ small.m{color:var(--muted);font-size:11px;margin-left:5px}
     </section>
 
     <section id="s4" class="card" hidden>
-      <h2>Backtesting per fascia</h2>
-      <p class="why">Saldo alla data di riferimento, quanto è stato incassato nella finestra e perdita osservata a confronto con il tasso applicato. La differenza in punti percentuali è divergente: rossa quando la perdita reale ha superato il tasso (accantonamento insufficiente) e verde quando è stata inferiore.</p>
+      <h2>Budget e consuntivo per marchio</h2>
+      <p class="why">Consuntivo, budget e anno precedente affiancati, con scostamento in euro e in percentuale. Il colore è divergente: verde quando il consuntivo supera il budget, rosso quando resta sotto. Le frecce mostrano la variazione sull’anno precedente.</p>
       <div class="ctl"><button class="btn" data-copy="t4">Copia in Excel</button></div>
       <div class="tw"><table id="t4"></table></div>
     </section>
@@ -189,8 +189,8 @@ small.m{color:var(--muted);font-size:11px;margin-left:5px}
     </section>
 
     <section id="s8" class="card" hidden>
-      <h2>Coorte × stock</h2>
-      <p class="why">Le due metodologie di backtesting affiancate per fascia. La barra blu è la perdita nella vista per coorte; quella gialla, nella vista per stock. La lettura riassume la differenza.</p>
+      <h2>Scorecard KPI con barre e andamento</h2>
+      <p class="why">Una riga per indicatore, con valore, obiettivo, avanzamento in barra, stato a semaforo e andamento delle ultime 8 settimane. Per gli indicatori in cui meno è meglio (insoluti, giorni di incasso, resi) il semaforo si inverte da solo.</p>
       <div class="ctl"><button class="btn" data-copy="t8">Copia in Excel</button></div>
       <div class="tw"><table id="t8"></table></div>
     </section>
@@ -287,7 +287,7 @@ function renderS1(){
   var c1=document.getElementById('c1');
   c1.innerHTML='<span class="lab">Canale</span>'+['Tutti'].concat(S1.insts).map(function(x){
       return '<button class="btn" data-i="'+x+'" aria-pressed="'+(S1.sel===x)+'">'+x+'</button>';}).join('')+
-    '<span class="sep"></span><span class="lab">Al filtraggio</span>'+
+    '<span class="sep"></span><span class="lab">Righe</span>'+
     [['lembrar','Mantieni le aperture'],['aberto','Apri tutto'],['fechado','Chiudi tutto']].map(function(m){
       return '<button class="btn" data-m="'+m[0]+'" aria-pressed="'+(S1.mode===m[0])+'">'+m[1]+'</button>';}).join('')+
     '<span class="sep"></span><button class="btn" data-copy="t1">Copia in Excel</button>';
@@ -320,7 +320,12 @@ document.getElementById('c1').addEventListener('click',function(e){
     if(S1.mode==='aberto')Object.keys(S1.cats).forEach(function(c){S1.open[c]=true;});
     if(S1.mode==='fechado')S1.open={};
     renderS1();
-  } else if(b.dataset.m){S1.mode=b.dataset.m;renderS1();}
+  } else if(b.dataset.m){
+    S1.mode=b.dataset.m;
+    if(S1.mode==='aberto')Object.keys(S1.cats).forEach(function(c){S1.open[c]=true;});
+    if(S1.mode==='fechado')S1.open={};
+    renderS1();
+  }
 });
 bindToggle(document.getElementById('t1'),function(k){S1.open[k]=!S1.open[k];renderS1();});
 
@@ -387,7 +392,7 @@ var S3={div:false};
 function renderS3(){
   var ini={q:3312480,v:224444050.94};
   var mov=[
-    {d:'nell’anno',h:'Note di credito, sconti e annullamenti',s:'partite non idonee al backtesting',q:-27904,a:1741185.80},
+    {d:'nell’anno',h:'Note di credito, sconti e annullamenti',s:'partite non idonee all’analisi',q:-27904,a:1741185.80},
     {d:'nell’anno',h:'Incassi da clienti',s:'saldo di queste partite al 31/12/2025',q:-331208,a:28310437.30},
     {d:'nell’anno',h:'Partite stornate senza incasso',s:'uscite dal sistema di origine',q:-219,a:25280.42},
     {sub:true,h:'Partite del 31/12/2025 ancora aperte nel partitario',s:'saldo al 31/12/2025'},
@@ -410,22 +415,19 @@ function renderS3(){
 }
 document.getElementById('b3').onclick=function(){S3.div=!S3.div;this.setAttribute('aria-pressed',S3.div);renderS3();};
 
-/* ---------- 4. Backtesting per fascia ---------- */
+/* ---------- 4. Budget e consuntivo ---------- */
 function renderS4(){
-  var fx=['Non scaduto','Scaduti fino a 30 giorni','Scaduti da 31 a 60 giorni','Scaduti da 61 a 90 giorni','Scaduti da 91 a 120 giorni','Scaduti da 121 a 150 giorni','Scaduti da 151 a 180 giorni','Scaduti da 181 a 360 giorni','Scaduti da 361 a 390 giorni','Oltre 390 giorni'];
-  var sal=[22.768e6,8.976e6,7.584e6,6.592e6,5.76e6,3.584e6,.736e6,16.56e6,3.696e6,157.072e6];
-  var per=[.312,.371,.442,.488,.519,.566,.781,.884,.941,.986];
-  var tx=[.27,.13,.52,.68,.77,.83,.86,.97,1,1];
-  var maxS=Math.max.apply(null,sal),S=0,P=0,PR=0;
-  var h='<thead><tr><th>Fascia alla data di riferimento</th><th>Saldo rif. (€)</th><th>Incassato nella finestra (€)</th><th>In sospeso (€)</th><th>Perdita osservata</th><th>Tasso applicato</th><th>Differenza</th></tr></thead><tbody>';
-  fx.forEach(function(f,i){
-    var s=sal[i],pend=s*per[i],pg=s-pend,d=per[i]-tx[i];
-    S+=s;P+=pg;PR+=s*tx[i];
-    h+='<tr><td>'+f+'</td>'+tdb(n2(s),s/maxS)+td(n2(pg))+td(n2(pend))+td(pc(per[i]))+td(pc(tx[i]))+
-      td(arrow(d,false)+pp(d),'cf',tint(d>0?'bad':'good',Math.abs(d)/.3))+'</tr>';
+  var nm=['Fiat','Alfa Romeo','Maserati','Armani','Prada','Gucci'],base=[48e6,31e6,22e6,27e6,35e6,41e6];
+  var h='<thead><tr><th>Marchio</th><th>Consuntivo (€)</th><th>Budget (€)</th><th>Scostamento (€)</th><th>Scostamento %</th><th>Anno precedente (€)</th><th>Var. % anno su anno</th></tr></thead><tbody>';
+  var T={c:0,b:0,p:0},rows=nm.map(function(n,i){var b=base[i]*rr(.92,1.08),c=b*rr(.88,1.12),p=c*rr(.86,1.1);return {n:n,b:b,c:c,p:p};});
+  var mx=Math.max.apply(null,rows.map(function(r){return r.c;}));
+  rows.forEach(function(r){
+    T.c+=r.c;T.b+=r.b;T.p+=r.p;
+    var d=r.c-r.b,dp=d/r.b,y=r.c/r.p-1,col=d>=0?'good':'bad';
+    h+='<tr><td>'+r.n+'</td>'+tdb(n2(r.c),r.c/mx)+td(n2(r.b))+td(arrow(d,true)+(d>0?'+':'')+n2(d),'cf',tint(col,Math.abs(dp)/.12))+td((dp>0?'+':'')+pc(dp),'cf',tint(col,Math.abs(dp)/.12))+td(n2(r.p))+td(arrow(y,true)+(y>0?'+':'')+pc(y),y>=0?'pos':'neg')+'</tr>';
   });
-  var pT=(S-P)/S,tT=PR/S,dT=pT-tT;
-  h+='</tbody><tfoot><tr><td>Totale</td>'+td(n2(S))+td(n2(P))+td(n2(S-P))+td(pc(pT))+td(pc(tT))+td(arrow(dT,false)+pp(dT),'cf',tint(dT>0?'bad':'good',Math.abs(dT)/.3))+'</tr></tfoot>';
+  var D=T.c-T.b,Y=T.c/T.p-1;
+  h+='</tbody><tfoot><tr><td>Totale</td>'+td(n2(T.c))+td(n2(T.b))+td((D>0?'+':'')+n2(D),D<0?'neg':'pos')+td((D>0?'+':'')+pc(D/T.b))+td(n2(T.p))+td((Y>0?'+':'')+pc(Y),Y<0?'neg':'pos')+'</tr></tfoot>';
   document.getElementById('t4').innerHTML=h;
 }
 
@@ -519,17 +521,24 @@ function renderS7(){
   document.getElementById('t7').innerHTML=h;
 }
 
-/* ---------- 8. Coorte × stock ---------- */
+/* ---------- 8. Scorecard KPI ---------- */
+function sp2(a,good){
+  var w=84,g=22,mn=Math.min.apply(null,a),mx=Math.max.apply(null,a),rg=mx-mn||1;
+  var pts=a.map(function(v,i){return [(i*(w-6)/(a.length-1)+3).toFixed(1),(g-3-(v-mn)/rg*(g-6)).toFixed(1)];}),l=pts[pts.length-1];
+  return '<svg class="spk" width="'+w+'" height="'+g+'" viewBox="0 0 '+w+' '+g+'" aria-hidden="true"><polyline fill="none" stroke="rgb(var(--blue))" stroke-width="1.6" points="'+pts.map(function(p){return p.join(',');}).join(' ')+'"/><circle cx="'+l[0]+'" cy="'+l[1]+'" r="2.6" fill="rgb(var(--'+good+'))"/></svg>';
+}
 function renderS8(){
-  var fx=['Non scaduto','Fino a 30 giorni','31–60 giorni','61–90 giorni','91–180 giorni','181–360 giorni','Oltre 360 giorni'];
-  var sf=[.073,.283,.457,.595,.802,.941,1],es=[.285,.379,.461,.491,.531,.893,.983];
-  var h='<thead><tr><th>Fascia</th><th>Perdita per coorte</th><th>Perdita sullo stock</th><th>Confronto</th><th>Differenza</th><th class="l">Lettura</th></tr></thead><tbody>';
-  fx.forEach(function(f,i){
-    var d=es[i]-sf[i],ad=Math.abs(d);
-    var leitura=ad<.05?'Allineate':(d>0?'Stock più alto':'Coorte più alta');
-    h+='<tr><td>'+f+'</td>'+td(pc(sf[i]))+td(pc(es[i]))+
-      '<td class="v"><div class="bul"><i style="width:'+(sf[i]*100)+'%;background:rgba(var(--blue),.75)"></i><i style="width:'+(es[i]*100)+'%;background:rgba(var(--warn),.85)"></i></div></td>'+
-      td(pp(d),'cf',tint(ad<.05?'good':'warn',ad/.3))+'<td>'+leitura+'</td></tr>';
+  var K=[['Fatturato netto (€ mln)',184.6,175,false,1],['Margine lordo',.382,.37,false,2],['Giorni medi di incasso (DSO)',58,52,true,0],['Tasso di insoluti',.041,.035,true,2],['Tasso di reso',.062,.07,true,2],['Soddisfazione clienti (NPS)',46,50,false,0]];
+  var h='<thead><tr><th>Indicatore</th><th>Valore</th><th>Obiettivo</th><th>Avanzamento</th><th>Stato</th><th>Ultime 8 settimane</th><th>Variazione settimana</th></tr></thead><tbody>';
+  K.forEach(function(k){
+    var v=k[1],o=k[2],low=k[3],pct=k[4]===2,fm=function(x){return pct?pc(x):(k[4]===1?F1.format(x):n0(x));};
+    var ach=low?o/v:v/o,st=ach>=1?'good':(ach>=.92?'warn':'bad'),tr=[],x=v*rr(.94,1.04);
+    for(var i=0;i<7;i++){tr.push(x);x=x*rr(.975,1.03);}tr.push(v);
+    var d=(v-tr[6])/tr[6],gd=(d>0)!==low;
+    h+='<tr><td>'+k[0]+'</td>'+td(fm(v))+td(fm(o))+
+      '<td class="v"><div class="bul"><i style="width:'+Math.min(100,ach*100).toFixed(0)+'%;background:rgba(var(--'+st+'),.8)"></i><i style="width:100%;background:rgba(var(--blue),.15)"></i></div></td>'+
+      td('<span class="dot" style="background:rgb(var(--'+st+'))"></span>'+(ach*100).toFixed(0)+'%')+
+      '<td class="c">'+sp2(tr,gd?'good':'bad')+'</td>'+td(arrow(d,!low)+(d>0?'+':'')+pc(d),gd?'pos':'neg')+'</tr>';
   });
   h+='</tbody>';
   document.getElementById('t8').innerHTML=h;
