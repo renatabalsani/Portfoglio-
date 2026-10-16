@@ -61,6 +61,8 @@ h2{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:22px;font-weight:700}
 .rv{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
 .rv.in{opacity:1;transform:none}
 .pj{display:grid;grid-template-columns:150px 1fr;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}.pf{background:#e10600;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px}.pf b{font:800 3.4rem 'Bricolage Grotesque',sans-serif;line-height:1}.pc{padding:22px}.pc h3{font-size:1.4rem}.pc .w{color:var(--mut);margin:4px 0 10px;font-size:.95rem}.pt{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 16px}.pt span{border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:.85rem}@media (max-width:600px){.pj{grid-template-columns:1fr}.pf{flex-direction:row;gap:10px}}
+.emb{border-top:1px solid var(--line)}.emb iframe{display:block;width:100%;height:min(78vh,720px);border:0;background:var(--card)}.emb a{display:inline-block;margin:10px 22px 16px}
+.pj.wide{grid-template-columns:1fr}.pj.wide .pf{flex-direction:row;gap:12px;padding:12px;background:#173f8a}.pj.wide .pf b{font-size:2rem}.pjs{display:grid;gap:18px}
 footer{text-align:center;color:var(--mut);padding:30px 20px 50px;font-size:.9rem}
 @media (max-width:760px){.hero,.about{grid-template-columns:1fr}.ph{order:-1;max-width:260px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv{opacity:1;transform:none}.bars i{height:var(--h)}}
@@ -153,16 +155,7 @@ footer{text-align:center;color:var(--mut);padding:30px 20px 50px;font-size:.9rem
 <div class="edu rv">
 <div><h3>Laurea in Ingegneria Informatica</h3><p>Univesp, 2020 - 2022</p></div>
 <div><h3>Laurea in Tecnologia dell'Informazione</h3><p>Univesp, 2020 - 2024</p></div>
-<div><h3>Esperto in Integrazione AI in Contesti Aziendali</h3><p>120 ore, Synergie Academy, 2025</p></div>
-<div><h3>Databricks Fundamentals</h3><p>Academy Accreditation, 2025</p></div>
-<div><h3>Build a Data Mesh with Dataplex</h3><p>Skill Badge, Google, 2025</p></div>
-<div><h3>Analisi dei Dati: Python, Tableau e GPT</h3><p>Boolean, 2024</p></div>
-</div>
-</section>
-
-<section id="projects">
-<h2>Progetti</h2>
-<article class="pj rv"><div class="pf" aria-hidden="true"><b>250</b><span>vittorie</span></div><div class="pc"><h3>Scuderia Ferrari in Formula 1</h3><p class="w">Dashboard interattiva in italiano, in stile Power BI</p><p>Analisi della storia della Ferrari dal 1950, in quattro pagine: Copertina, Corse, Scuderia e Piloti. Confronta circuiti e paesi, titoli per decennio e statistiche dei piloti, con un tooltip di dettaglio su ogni barra.</p><div class="pt"><span>Dashboard</span><span>Data storytelling</span><span>Tooltip</span><span>Dati fino a luglio 2026</span></div><a class="btn p" href="dashboard-ferrari.html" target="_blank" rel="noopener">Apri la dashboard</a></div></article>
+<div><h3>Esperto in Integrazione AI in Contesti Aziendali</h3><<div class="pjs"><article class="pj rv"><div class="pf" aria-hidden="true"><b>250</b><span>vittorie</span></div><div class="pc"><h3>Scuderia Ferrari in Formula 1</h3><p class="w">Dashboard interattiva in italiano, in stile Power BI</p><p>Analisi della storia della Ferrari dal 1950, in quattro pagine: Copertina, Corse, Scuderia e Piloti. Confronta circuiti e paesi, titoli per decennio e statistiche dei piloti, con un tooltip di dettaglio su ogni barra.</p><div class="pt"><span>Dashboard</span><span>Data storytelling</span><span>Tooltip</span><span>Dati fino a luglio 2026</span></div><a class="btn p" href="dashboard-ferrari.html" target="_blank" rel="noopener">Apri la dashboard</a></div></article><article class="pj wide rv"><div class="pf" aria-hidden="true"><b>9</b><span>matrici Power BI</span></div><div class="pc"><h3>Galleria di matrici</h3><p class="w">Modelli di matrice interattivi per pannelli Power BI, in italiano</p><p>Nove matrici per crediti e FSC, backtesting, vendite e rischio clienti: espandibili, con formattazione condizionale, estratto conto in formato italiano (Dare e Avere) e copia in Excel. Scenario fittizio di una società italiana di auto e moda.</p><div class="pt"><span>Power BI</span><span>DAX</span><span>Matrici</span><span>Formattazione condizionale</span><span>Dati fittizi</span></div></div><div class="emb"><iframe src="galleria-matrici.html" title="Galleria di matrici" loading="lazy"></iframe><a class="btn" href="galleria-matrici.html" target="_blank" rel="noopener">Apri a schermo intero</a></div></article></div> e paesi, titoli per decennio e statistiche dei piloti, con un tooltip di dettaglio su ogni barra.</p><div class="pt"><span>Dashboard</span><span>Data storytelling</span><span>Tooltip</span><span>Dati fino a luglio 2026</span></div><a class="btn p" href="dashboard-ferrari.html" target="_blank" rel="noopener">Apri la dashboard</a></div></article>
 </section>
 <section id="contact">
 <h2>Contatti</h2>
