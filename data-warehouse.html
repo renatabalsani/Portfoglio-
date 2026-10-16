@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Data warehouse, dal dato al report</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5f9;--surface:#fff;--ink:#14202e;--muted:#58667a;--line:#dbe2ec;--brand:#173f8a;--on-brand:#fff;--soft:#e8eef9;--hi:#f2b705;--good:22,128,96;--bad:196,52,40;--code:#0f1b2b;--sh:0 1px 2px rgba(20,32,46,.06),0 10px 28px rgba(20,32,46,.07);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0d141d;--surface:#141d29;--ink:#e6ecf4;--muted:#9aa8ba;--line:#273448;--brand:#7fb0ee;--on-brand:#0d141d;--soft:#1a2a3f;--hi:#f5c518;--good:72,190,150;--bad:236,104,92;--code:#0a111b;--sh:0 1px 2px #0006,0 10px 28px #0005;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Instrument Sans','Segoe UI',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque','Segoe UI',sans-serif;margin:0;letter-spacing:-.015em}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(14px,3vw,30px)}
+.tri{height:5px;background:linear-gradient(90deg,#009246 0 33.4%,#f4f5f0 33.4% 66.7%,#ce2b37 66.7%)}
+.hero{background:var(--surface);border-bottom:1px solid var(--line);padding:clamp(16px,3vw,30px) 0}
+.hero h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;line-height:1.1}
+.lead{margin:8px 0 0;color:var(--muted);max-width:76ch}
+html.in .lead{display:none}html.in .hero{padding:12px 0}html.in .hero h1{font-size:1.3rem}
+.bar{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin:16px 0 10px}
+.btn{font:600 13.5px inherit;font-family:inherit;padding:7px 14px;border:1px solid var(--line);background:var(--surface);color:var(--brand);border-radius:8px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--brand)}.btn.p{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.btn:focus-visible,.nd:focus-visible,.tb:focus-visible,input:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+.tg{display:flex;gap:8px;align-items:center;font-weight:600;margin-left:auto;cursor:pointer}
+.prog{height:4px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:10px}
+.prog i{display:block;height:100%;width:0;background:var(--hi)}
+.prog i.run{animation:fill var(--d,6s) linear forwards}
+@keyframes fill{to{width:100%}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);padding:clamp(12px,2.2vw,22px)}
+.pipe{width:100%;height:auto;display:block}
+.nd{cursor:pointer}
+.nd rect{fill:var(--surface);stroke:var(--line);stroke-width:2;transition:fill .3s,stroke .3s}
+.nd text{fill:var(--ink);font:600 13px 'Instrument Sans',sans-serif;transition:fill .3s}
+.nd .s{fill:var(--muted);font-weight:400;font-size:11px}
+.nd circle{fill:var(--soft);stroke:var(--brand);stroke-width:2}.nd .n{fill:var(--brand);font:800 12px 'Bricolage Grotesque',sans-serif}
+.nd.on rect{fill:var(--brand);stroke:var(--brand)}.nd.on text{fill:var(--on-brand)}.nd.on .n{fill:var(--brand)}.nd.on .s{fill:var(--on-brand);opacity:.8}
+.nd.done rect{stroke:var(--brand)}
+.rail{stroke:var(--line);stroke-width:3;stroke-dasharray:2 7;stroke-linecap:round}
+.pk{fill:var(--hi);stroke:var(--surface);stroke-width:2}
+.calm *{animation:none!important}
+.panel{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(14px,2.4vw,28px);margin-top:16px}
+.panel h2{font-size:clamp(1.3rem,2.6vw,1.7rem);margin-bottom:6px}
+.panel .sub{color:var(--brand);font-weight:600;margin:0 0 10px}
+.panel p{margin:0 0 12px;color:var(--muted)}
+.panel ul{margin:0 0 14px;padding-left:20px}.panel li{margin-bottom:6px}
+.ord{background:var(--soft);border-left:4px solid var(--hi);border-radius:8px;padding:10px 14px;font-size:14px}
+.ord b{color:var(--brand)}
+.app{margin-top:12px;border:1px solid var(--line);border-left:4px solid rgb(var(--good));border-radius:10px;padding:10px 14px;background:var(--surface)}.app h3{font-size:.95rem;margin:0 0 6px;color:rgb(var(--good))}.app ul{margin:0 0 8px;padding-left:18px}.app li{margin-bottom:4px;color:var(--ink)}.chp{display:flex;flex-wrap:wrap;gap:6px}.chp span{background:var(--soft);color:var(--brand);border-radius:999px;padding:1px 10px;font-size:12.5px;font-weight:600}
+.vis{min-width:0;animation:in .45s both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.src{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg)}
+.src b{font-family:'Bricolage Grotesque',sans-serif;font-size:1.05rem;display:block}.src small{color:var(--muted)}
+.src .c{font:800 1.7rem 'Bricolage Grotesque',sans-serif;color:var(--brand);margin-top:6px}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th{background:var(--brand);color:var(--on-brand);text-align:left;padding:7px 10px;white-space:nowrap}
+td{padding:6px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr.ap{animation:in .4s both}
+td.bad{background:rgba(var(--bad),.16);color:rgb(var(--bad));font-weight:600}
+td.ok{background:rgba(var(--good),.14)}
+.tag{display:inline-block;background:rgb(var(--bad));color:#fff;border-radius:999px;padding:0 8px;font-size:11px;margin-left:6px}
+.rules{list-style:none;padding:0;margin:0 0 14px}
+.rules li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line)}
+.rules i{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:12px;color:transparent;transition:all .3s}
+.rules li.done i{background:rgb(var(--good));border-color:rgb(var(--good));color:#fff}
+pre{margin:0;background:var(--code);color:#dbe7f5;border-radius:12px;padding:12px 14px;overflow:auto;font:12.5px/1.55 ui-monospace,Consolas,monospace}
+pre .k{color:#7fb0ee}pre .c{color:#8aa0b8}
+.ba{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-bottom:12px}
+.ba div{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:12.5px ui-monospace,Consolas,monospace;background:var(--bg)}
+.ba .ar{border:0;background:none;font-size:1.4rem;color:var(--brand);padding:0}
+.ba small{display:block;font:600 11px 'Instrument Sans',sans-serif;color:var(--muted);margin-bottom:3px}
+svg.st{width:100%;height:auto;display:block}
+.tb{cursor:pointer}.tb rect.b{fill:var(--surface);stroke:var(--line);stroke-width:2;transition:stroke .2s,fill .2s}
+.tb rect.h{fill:var(--soft)}.tb.f rect.h{fill:var(--hi)}.tb.f text.t{fill:#14202e}
+.tb text{fill:var(--ink);font:11px 'Instrument Sans',sans-serif}.tb text.t{font:700 12px 'Bricolage Grotesque',sans-serif}
+.tb.sel rect.b,.tb:hover rect.b{stroke:var(--brand);stroke-width:3}
+.ln{stroke:var(--muted);stroke-width:2;opacity:.55;stroke-dasharray:300;stroke-dashoffset:0}
+.ln.sel{stroke:var(--brand);opacity:1;stroke-width:3}
+.draw .ln{animation:dr 1.2s ease-out both}
+@keyframes dr{from{stroke-dashoffset:300}to{stroke-dashoffset:0}}
+.cap{margin-top:10px;background:var(--soft);border-radius:10px;padding:10px 14px;font-size:13.5px;min-height:3.2em}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.kp div{border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center;background:var(--bg)}
+.kp b{display:block;font:800 1.6rem 'Bricolage Grotesque',sans-serif;color:var(--brand)}.kp span{font-size:12.5px;color:var(--muted)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+footer{color:var(--muted);font-size:12.5px;text-align:center;padding:22px 16px 30px}
+@media (max-width:820px){.panel{grid-template-columns:1fr}.ba{grid-template-columns:1fr}.ba .ar{transform:rotate(90deg);text-align:center}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<script>if(window.self!==window.top)document.documentElement.classList.add('in');</script>
+<div class="tri"></div>
+<header class="hero"><div class="wrap">
+<h1>Data warehouse: dal dato al report</h1>
+<p class="lead">Progetto di modello dimensionale, passo per passo. Segui un ordine di vendita dalla fonte fino al report in Power BI: staging, trasformazione, schema a stella e misure DAX. Scenario fittizio di una società italiana di auto e moda.</p>
+</div></header>
+<main class="wrap">
+<div class="bar">
+<button class="btn p" id="play">Pausa</button>
+<button class="btn" id="prev">← Passo</button>
+<button class="btn" id="next">Passo →</button>
+<label class="tg"><input type="checkbox" id="anim" checked> Modalità animata</label>
+</div>
+<div class="prog" aria-hidden="true"><i id="pg"></i></div>
+<div class="card" id="root">
+<svg class="pipe" viewBox="0 0 960 130" role="group" aria-label="Pipeline dei dati in cinque passi">
+<line class="rail" x1="20" y1="65" x2="940" y2="65"/>
+<g id="pkts"></g>
+<g id="nodes"></g>
+</svg>
+<div class="panel">
+<div><h2 id="ti"></h2><p class="sub" id="su"></p><div id="tx"></div><div class="ord" id="or"></div><div class="app" id="ap"></div></div>
+<div class="vis" id="vi"></div>
+</div>
+</div>
+</main>
+<footer>Il percorso e i dati sono dimostrativi e fittizi. Il riquadro «Come l’ho applicato» descrive la mia esperienza professionale, senza dati né nomi di aziende. Renata Balsani, Data Analyst e Business Intelligence.</footer>
+<script>
+var $=function(s){return document.querySelector(s)};
+var APP=[[["Ho lavorato con ERP e sistemi gestionali (SAP, TOTVS), database SQL Server e Google BigQuery.", "I dati riguardavano pagamenti nazionali e internazionali, e-commerce, diritti d’autore e incassi."], ["SAP", "TOTVS", "SQL Server", "Google BigQuery"]], [["Collegavo le fonti a Power BI e interrogavo i dati con query SQL su SQL Server e BigQuery.", "Verificavo subito i problemi di qualità prima di costruire il modello."], ["SQL", "SQL Server", "Google BigQuery"]], [["Preparavo e pulivo i dati con Power Query (M), con processi ETL a supporto delle decisioni.", "Aggiornavo le pipeline di Azure Data Factory che alimentano i dati.", "Automatizzavo la conciliazione dei pagamenti nazionali e internazionali."], ["Power Query / M", "Azure Data Factory", "Conciliazione automatica"]], [["Scrivevo query SQL e creavo viste di appoggio per i report.", "Modellavo i dati e definivo le relazioni tra le tabelle.", "Documentavo le regole di business."], ["SQL", "Viste", "Relazioni tra tabelle", "Documentazione tecnica"]], [["Costruivo report e dashboard con DAX, con attenzione all’esperienza dell’utente e al data storytelling.", "Raccoglievo i requisiti con gli stakeholder e validavo i progetti.", "Gestivo i progetti da cima a fondo con Azure DevOps."], ["Power BI", "DAX", "Azure DevOps", "Stakeholder"]]];
+var DUR=6500,cur=0,playing=true,animated=true,timer=null,tos=[];
+var ST=[
+{n:'Fonti',s:'Sistemi operativi',t:'Le fonti: dove nascono i dati',u:'Quattro sistemi, quattro linguaggi diversi',
+ p:'Ogni sistema registra una parte del business e lo fa a modo suo. Prima di costruire il modello serve sapere cosa c’è, quanto è grande e chi ne è responsabile.',
+ b:['Mappare le fonti e il loro proprietario','Definire la frequenza di aggiornamento (giornaliera, mensile)','Capire le chiavi: come si riconosce lo stesso cliente in sistemi diversi'],
+ o:'L’ordine <b>10482</b> nasce nell’ERP vendite: Fiat 500 elettrica, 28.400 €, cliente Mario Rossi, 3 settembre 2026.'},
+{n:'Staging',s:'Copia grezza',t:'Staging: la copia così com’è',u:'Si copia tutto, senza correggere nulla',
+ p:'I dati arrivano in un’area di appoggio identica alla fonte. Qui non si corregge nulla: si fotografa il dato originale, così ogni errore si può ricostruire.',
+ b:['Una tabella di staging per ogni tabella sorgente','Si conserva la data di caricamento','I problemi emergono qui: doppioni, vuoti, formati diversi'],
+ o:'L’ordine <b>10482</b> compare <b>due volte</b>, con “FIAT” in maiuscolo e la data in formato 03/09/26.'},
+{n:'Trasformazione',s:'Pulizia e regole',t:'Trasformazione: pulire e dare regole',u:'Il cuore del processo',
+ p:'Si applicano le regole di business una alla volta. Ogni regola è verificabile e, alla fine, i totali devono quadrare con la fonte.',
+ b:['Le regole sono scritte e ripetibili','Le righe scartate non spariscono: finiscono in una tabella di scarti','Il caricamento incrementale evita di rileggere tutto ogni volta'],
+ o:'L’ordine <b>10482</b> perde il doppione, “FIAT” diventa “Fiat” e il cliente riceve la chiave <b>cliente_key 5.021</b>.'},
+{n:'Data warehouse',s:'Schema a stella',t:'Data warehouse: il modello a stella',u:'Fatti al centro, dimensioni intorno',
+ p:'I numeri (vendite, incassi) stanno nelle tabelle dei fatti. Le dimensioni (cliente, prodotto, data) descrivono i fatti e permettono di tagliarli in tanti modi.',
+ b:['Granularità dichiarata: una riga di fact_vendite è una riga d’ordine','Le dimensioni sono condivise tra più tabelle dei fatti','Lo storico dei clienti si conserva con validità dal/al (SCD tipo 2)'],
+ o:'L’ordine <b>10482</b> diventa una riga di <b>fact_vendite</b>: 4 chiavi, quantità 1, importo netto 28.400 €.'},
+{n:'Power BI',s:'Modello e report',t:'Power BI: il modello semantico',u:'Relazioni, misure DAX e matrici',
+ p:'Il report legge il data warehouse. Le relazioni uno-a-molti vanno dalle dimensioni ai fatti e le misure DAX calcolano gli indicatori una volta sola, per tutti i report.',
+ b:['Relazioni dalle dimensioni ai fatti, con filtro in una sola direzione','Misure DAX riutilizzabili, non colonne calcolate','Matrici e dashboard costruite sullo stesso modello'],
+ o:'L’ordine <b>10482</b> contribuisce ai <b>184,6 mln</b> di fatturato netto che il report mostra a gennaio-settembre.'}];
+
+/* ---- pipeline ---- */
+function buildPipe(){
+  var h='';
+  ST.forEach(function(s,i){
+    var x=15+i*186;
+    h+='<g class="nd" tabindex="0" role="button" aria-label="Passo '+(i+1)+': '+s.n+'" data-i="'+i+'"><rect x="'+x+'" y="28" width="170" height="74" rx="14"/><circle cx="'+(x+24)+'" cy="65" r="13"/><text class="n" x="'+(x+24)+'" y="69.5" text-anchor="middle">'+(i+1)+'</text><text x="'+(x+46)+'" y="61">'+s.n+'</text><text class="s" x="'+(x+46)+'" y="79">'+s.s+'</text></g>';
+  });
+  $('#nodes').innerHTML=h;
+  var p='';
+  for(var k=0;k<4;k++)p+='<circle class="pk" r="6" cy="65"><animateMotion dur="7s" begin="'+(k*1.75)+'s" repeatCount="indefinite" path="M20,0 L920,0"/></circle>';
+  $('#pkts').innerHTML=p;
+  $('#nodes').addEventListener('click',function(e){var g=e.target.closest('.nd');if(g)go(+g.dataset.i,true)});
+  $('#nodes').addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){var g=e.target.closest('.nd');if(g){e.preventDefault();go(+g.dataset.i,true)}}});
+}
+
+/* ---- visuals ---- */
+var SQLT='<span class="c">-- carica i fatti dalla staging, risolvendo le chiavi</span>\n<span class="k">INSERT INTO</span> fact_vendite (data_key, cliente_key, prodotto_key, canale_key, quantita, importo_netto)\n<span class="k">SELECT</span> d.data_key, c.cliente_key, p.prodotto_key, ch.canale_key, s.quantita, s.importo\n<span class="k">FROM</span> stg_ordini_pulita s\n<span class="k">JOIN</span> dim_data d <span class="k">ON</span> d.data = s.data_ordine\n<span class="k">JOIN</span> dim_cliente c <span class="k">ON</span> c.codice = s.codice_cliente <span class="k">AND</span> s.data_ordine <span class="k">BETWEEN</span> c.valido_dal <span class="k">AND</span> c.valido_al\n<span class="k">JOIN</span> dim_prodotto p <span class="k">ON</span> p.modello = s.modello\n<span class="k">JOIN</span> dim_canale ch <span class="k">ON</span> ch.canale = s.canale;';
+var DAX='<span class="c">// misure scritte una sola volta</span>\nFatturato netto = <span class="k">SUM</span> ( fact_vendite[importo_netto] )\nMargine lordo % = <span class="k">DIVIDE</span> ( [Fatturato netto] - <span class="k">SUM</span> ( fact_vendite[costo] ), [Fatturato netto] )\nRitardo medio incasso = <span class="k">AVERAGE</span> ( fact_incassi[giorni_ritardo] )';
+var RULES=['Pulizia di spazi, maiuscole e formato delle date','Deduplica: un solo record per numero d’ordine','Standardizzazione di marchi e modelli (FIAT diventa Fiat)','Importi in euro con due decimali','Chiavi surrogate numeriche per clienti e prodotti','Storico delle variazioni dei clienti (SCD tipo 2)','Controllo: righe lette = righe caricate + scartate','Riconciliazione: totale fatturato DWH = totale ERP'];
+var TB={
+ fact_vendite:{f:1,x:120,y:140,w:170,h:112,cols:['data_key (FK)','cliente_key (FK)','prodotto_key (FK)','canale_key (FK)','quantita','importo_netto','costo'],d:'Fatto: una riga per riga d’ordine. Misure: quantità, importo netto, costo.'},
+ fact_incassi:{f:1,x:430,y:140,w:170,h:112,cols:['data_key (FK)','cliente_key (FK)','pagamento_key (FK)','fascia_key (FK)','importo_incassato','giorni_ritardo'],d:'Fatto: una riga per incasso. Misure: importo incassato, giorni di ritardo.'},
+ dim_data:{x:275,y:8,w:170,h:92,cols:['data_key (PK)','data','mese','trimestre','anno'],d:'Dimensione condivisa: il calendario. Serve a vendite e incassi.'},
+ dim_cliente:{x:275,y:292,w:170,h:92,cols:['cliente_key (PK)','codice','nome','segmento','valido_dal / valido_al'],d:'Dimensione condivisa con storico (SCD tipo 2): se un cliente cambia segmento si aggiunge una riga.'},
+ dim_canale:{x:10,y:8,w:170,h:92,cols:['canale_key (PK)','canale'],d:'Boutique, E-commerce, Outlet.'},
+ dim_prodotto:{x:10,y:292,w:170,h:92,cols:['prodotto_key (PK)','marchio','modello','categoria'],d:'Marchio, modello e categoria, per esempio Fiat, 500 elettrica, utilitaria.'},
+ dim_pagamento:{x:540,y:8,w:170,h:92,cols:['pagamento_key (PK)','metodo'],d:'Bonifico, carta, finanziamento.'},
+ dim_fascia:{x:540,y:292,w:170,h:92,cols:['fascia_key (PK)','descrizione'],d:'Fasce di scaduto: non scaduto, 1-30, 31-60 giorni e così via.'}};
+var LN=[['fact_vendite','dim_data'],['fact_vendite','dim_cliente'],['fact_vendite','dim_canale'],['fact_vendite','dim_prodotto'],['fact_incassi','dim_data'],['fact_incassi','dim_cliente'],['fact_incassi','dim_pagamento'],['fact_incassi','dim_fascia']];
+function ctr(t){var b=TB[t];return [b.x+b.w/2,b.y+b.h/2]}
+function star(){
+  var s='<svg class="st draw" viewBox="0 0 720 394" role="group" aria-label="Schema a stella">';
+  LN.forEach(function(l,i){var a=ctr(l[0]),b=ctr(l[1]);s+='<line class="ln" data-a="'+l[0]+'" data-b="'+l[1]+'" x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" style="animation-delay:'+(i*.12)+'s"/>';});
+  Object.keys(TB).forEach(function(k){var b=TB[k],n=b.f?4:3;
+    s+='<g class="tb'+(b.f?' f':'')+'" tabindex="0" data-t="'+k+'"><rect class="b" x="'+b.x+'" y="'+b.y+'" width="'+b.w+'" height="'+b.h+'" rx="8"/><rect class="h" x="'+b.x+'" y="'+b.y+'" width="'+b.w+'" height="24" rx="8"/><text class="t" x="'+(b.x+10)+'" y="'+(b.y+16)+'">'+k+'</text>';
+    for(var i=0;i<n&&i<b.cols.length;i++)s+='<text x="'+(b.x+10)+'" y="'+(b.y+42+i*14)+'">'+b.cols[i]+'</text>';
+    if(b.cols.length>n)s+='<text x="'+(b.x+10)+'" y="'+(b.y+42+n*14)+'" style="opacity:.6">+'+(b.cols.length-n)+' colonne</text>';
+    s+='</g>';});
+  return s+'</svg><div class="cap" id="cap">Passa il mouse o tocca una tabella per vedere le colonne e a cosa serve.</div>';
+}
+function selT(k){
+  document.querySelectorAll('.tb').forEach(function(g){g.classList.toggle('sel',g.dataset.t===k)});
+  document.querySelectorAll('.ln').forEach(function(l){l.classList.toggle('sel',l.dataset.a===k||l.dataset.b===k)});
+  var b=TB[k],c=$('#cap');if(c)c.innerHTML='<b>'+k+'</b>: '+b.d+'<br>Colonne: '+b.cols.join(', ')+'.';
+}
+function visual(i){
+  if(i===0)return '<div class="g4">'+[['ERP vendite','ordini e fatture',184320,'righe'],['CRM clienti','anagrafica clienti',42615,'clienti'],['Partitario crediti','Dare e Avere, scadenze',96870,'partite'],['Listino prodotti','marchi e modelli',1240,'articoli']].map(function(s){return '<div class="src"><b>'+s[0]+'</b><small>'+s[1]+'</small><div class="c" data-n="'+s[2]+'">0</div><small>'+s[3]+'</small></div>'}).join('')+'</div>';
+  if(i===1)return '<div class="tw"><table><thead><tr><th>n_ordine</th><th>cliente</th><th>marchio</th><th>modello</th><th>importo</th><th>data</th></tr></thead><tbody>'+
+   [['10482','rossi mario','FIAT','500 elettr.','28400,00','03/09/26','b0'],['10482','rossi mario','FIAT','500 elettr.','28400,00','03/09/26','dup'],['10483','Bianchi SRL','Alfa Romeo','Giulia','52.300','2026-09-04','b4'],['10484','','maserati','Grecale','82000,00','05/09/26','b1'],['10485','Verdi Anna','Alfa Romeo','stelvio','58100,00','06/09/26','b3']].map(function(r,k){
+     var c=function(j,bad){return '<td'+(bad?' class="bad"':'')+'>'+(r[j]===''?'(vuoto)':r[j])+'</td>'};
+     return '<tr class="ap" style="animation-delay:'+(k*.25)+'s">'+c(0,0)+c(1,r[6]==='b1'||r[6]==='dup')+c(2,r[6]==='b0'||r[6]==='b1'||r[6]==='dup')+c(3,r[6]==='b3')+c(4,r[6]==='b4')+'<td'+(r[6]==='b4'?' class="bad"':'')+'>'+r[5]+(r[6]==='dup'?'<span class="tag">doppione</span>':'')+'</td></tr>'}).join('')+'</tbody></table></div><p class="cap">In rosso, i problemi che la trasformazione dovrà risolvere: doppioni, valori vuoti, maiuscole e formati diversi.</p>';
+  if(i===2)return '<div class="ba"><div><small>Prima (staging)</small>10482 | rossi mario | FIAT | 500 elettr. | 28400,00 | 03/09/26</div><div class="ar">→</div><div><small>Dopo (pulito)</small>10482 | 5021 | Fiat | 500 elettrica | 28.400,00 € | 2026-09-03</div></div><ul class="rules" id="rl">'+RULES.map(function(r){return '<li><i>✓</i><span>'+r+'</span></li>'}).join('')+'</ul><pre>'+SQLT+'</pre>';
+  if(i===3)return star();
+  return '<div class="kp"><div><b data-n="1846" data-d="1">0</b><span>Fatturato netto (€ mln)</span></div><div><b data-n="382" data-d="1" data-p="1">0</b><span>Margine lordo</span></div><div><b data-n="12" data-d="0">0</b><span>Ritardo medio incasso (giorni)</span></div></div><pre>'+DAX+'</pre><div class="cta"><a class="btn p" href="galleria-matrici.html" target="_blank" rel="noopener">Vedi le matrici costruite sul modello</a></div>';
+}
+function clear(){tos.forEach(clearTimeout);tos=[]}
+function count(el){
+  var n=+el.dataset.n,d=+el.dataset.d||0,p=el.dataset.p,t=performance.now(),dur=animated?1200:0;
+  (function f(now){var q=dur?Math.min((now-t)/dur,1):1,v=n*(1-Math.pow(1-q,3));
+    el.textContent=(d?(v/10).toLocaleString('it-IT',{minimumFractionDigits:1,maximumFractionDigits:1}):Math.round(v).toLocaleString('it-IT'))+(p?'%':'');
+    if(q<1)requestAnimationFrame(f)})(t);
+}
+function after(i){
+  document.querySelectorAll('[data-n]').forEach(count);
+  if(i===2){var li=document.querySelectorAll('#rl li');li.forEach(function(x,k){if(animated)tos.push(setTimeout(function(){x.classList.add('done')},500+k*620));else x.classList.add('done')});}
+  if(i===3){document.querySelectorAll('.tb').forEach(function(g){var a=function(){selT(g.dataset.t)};g.addEventListener('mouseenter',a);g.addEventListener('focus',a);g.addEventListener('click',a)});selT('fact_vendite');}
+}
+/* ---- navigation ---- */
+function go(i,user){
+  cur=(i+ST.length)%ST.length;clear();var s=ST[cur];
+  document.querySelectorAll('.nd').forEach(function(g,k){g.classList.toggle('on',k===cur);g.classList.toggle('done',k<cur)});
+  $('#ti').textContent=s.t;$('#su').textContent=s.u;
+  $('#tx').innerHTML='<p>'+s.p+'</p><ul>'+s.b.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>';
+  $('#ap').innerHTML='<h3>Come l’ho applicato</h3><ul>'+APP[cur][0].map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul><div class="chp">'+APP[cur][1].map(function(x){return '<span>'+x+'</span>'}).join('')+'</div>';
+  $('#or').innerHTML='<small>Il nostro ordine, a questo passo</small><br>'+s.o;
+  var v=$('#vi');v.style.animation='none';v.offsetHeight;v.style.animation='';
+  v.innerHTML=visual(cur);after(cur);
+  if(user)playing=false;
+  sync();
+}
+function sync(){
+  clearTimeout(timer);var p=$('#pg');p.classList.remove('run');p.offsetWidth;
+  $('#play').textContent=playing&&animated?'Pausa':'Avvia';
+  if(playing&&animated){p.style.setProperty('--d',DUR+'ms');p.classList.add('run');timer=setTimeout(function(){go(cur+1,false)},DUR)}
+  else p.style.width='0';
+}
+function setAnim(on){
+  animated=on;$('#root').classList.toggle('calm',!on);
+  var sv=document.querySelector('.pipe');try{on?sv.unpauseAnimations():sv.pauseAnimations()}catch(e){}
+  document.querySelectorAll('.pk').forEach(function(c){c.style.display=on?'':'none'});
+  if(!on)playing=false;else playing=true;
+  go(cur,false);
+}
+$('#play').onclick=function(){if(!animated){$('#anim').checked=true;setAnim(true);return}playing=!playing;sync()};
+$('#prev').onclick=function(){go(cur-1,true)};$('#next').onclick=function(){go(cur+1,true)};
+$('#anim').onchange=function(){setAnim(this.checked)};
+document.addEventListener('keydown',function(e){if(e.target.closest('input'))return;if(e.key==='ArrowRight')go(cur+1,true);if(e.key==='ArrowLeft')go(cur-1,true)});
+buildPipe();
+if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches){$('#anim').checked=false;setAnim(false)}else go(0,false);
+</script>
+</body>
+</html>
