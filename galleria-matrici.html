@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galleria di matrici | Power BI</title>
+<script>if(window.self!==window.top)document.documentElement.classList.add('in');</script>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5f9;--surface:#fff;--ink:#14202e;--muted:#58667a;--line:#dbe2ec;--line2:#edf1f6;--brand:#173f8a;--on-brand:#fff;--brand-soft:#e8eef9;--hi:#f2b705;--good:22,128,96;--bad:196,52,40;--warn:205,140,10;--blue:23,63,138;--sh:0 1px 2px rgba(20,32,46,.06),0 10px 28px rgba(20,32,46,.07);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0d141d;--surface:#141d29;--ink:#e6ecf4;--muted:#9aa8ba;--line:#273448;--line2:#1c2735;--brand:#7fb0ee;--on-brand:#0d141d;--brand-soft:#1a2a3f;--hi:#f5c518;--good:72,190,150;--bad:236,104,92;--warn:232,184,72;--blue:127,176,238;--sh:0 1px 2px #0006,0 10px 28px #0005;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Instrument Sans','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif}
+h1,h2{font-family:'Bricolage Grotesque','Segoe UI',system-ui,sans-serif;margin:0;letter-spacing:-.015em}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(14px,3vw,32px)}
+.tri{height:5px;background:linear-gradient(90deg,#009246 0 33.4%,#f4f5f0 33.4% 66.7%,#ce2b37 66.7%)}
+.hero{background:var(--surface);border-bottom:1px solid var(--line);padding:clamp(18px,3vw,34px) 0 clamp(16px,2.4vw,26px)}
+.hero h1{font-size:clamp(1.7rem,4.2vw,2.6rem);font-weight:800;line-height:1.1}
+.lead{margin:10px 0 0;color:var(--muted);max-width:74ch}
+.facts{display:flex;gap:8px;flex-wrap:wrap;list-style:none;margin:16px 0 0;padding:0}
+.facts li{background:var(--brand-soft);color:var(--brand);border-radius:999px;padding:4px 14px;font-weight:600;font-size:13px}
+html.in .lead,html.in .facts{display:none}html.in .hero{padding:12px 0}html.in .hero h1{font-size:1.35rem}
+.tabsbar{position:sticky;top:0;z-index:6;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:10px 0;scrollbar-width:thin}
+.tabs button{flex:none;display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px 6px 8px;font:600 13.5px inherit;font-family:inherit;cursor:pointer;transition:background .2s,color .2s}
+.tabs button b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-size:11.5px}
+.tabs button:hover{border-color:var(--brand)}
+.tabs button[aria-selected=true]{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.tabs button[aria-selected=true] b{background:rgba(255,255,255,.25);color:inherit}
+main{padding:18px 0 60px}
+.gbar{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin:0 0 14px;font-size:14px}
+.gbar label{display:flex;gap:8px;align-items:center;font-weight:600;cursor:pointer}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+.ref{margin:0 0 18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 16px;font-size:13.5px}
+.ref summary{cursor:pointer;font-weight:600;color:var(--brand)}
+.ref ul{margin:10px 0 4px;padding-left:20px;color:var(--muted)}.ref li{margin-bottom:6px}.ref b{color:var(--ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);padding:clamp(14px,2.4vw,26px)}
+.card[hidden]{display:none}
+.card h2{font-size:clamp(1.25rem,2.6vw,1.65rem);font-weight:700;margin-bottom:10px}
+.why{margin:0 0 16px;color:var(--muted);max-width:80ch;font-size:14px;border-left:4px solid var(--hi);padding:2px 0 2px 14px}
+.why code{background:var(--brand-soft);color:var(--brand);padding:1px 6px;border-radius:5px;font-size:12.5px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.ctl .lab{font-size:13px;color:var(--muted)}
+.sep{width:1px;height:22px;background:var(--line);margin:0 4px}
+.tw{border-radius:12px}
+thead th{background:var(--brand)}
+tbody tr:not(.l1):not(.l2):not(.sub):not(.fim):hover>td{background:var(--brand-soft)}
+footer{color:var(--muted);font-size:12.5px;text-align:center;padding:0 16px 30px}
+@media (max-width:700px){.card{border-radius:14px}.tabs button{font-size:13px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.btn{font:inherit;font-size:13px;font-weight:600;padding:5px 12px;border:1px solid var(--line);background:var(--surface);color:var(--brand);border-radius:6px;cursor:pointer}
+.btn:hover{border-color:var(--brand)}
+.btn[aria-pressed="true"]{background:var(--brand);color:var(--on-brand);border-color:var(--brand)}
+.btn:focus-visible,a:focus-visible,tr[tabindex]:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.tw{overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px;max-height:560px}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+thead th{position:sticky;top:0;z-index:2;background:var(--brand);color:var(--on-brand);font-weight:600;text-align:right;padding:8px 10px;white-space:nowrap}
+thead th:first-child,thead th.l{text-align:left}
+td{padding:6px 10px;border-bottom:1px solid var(--line2);white-space:nowrap}
+td.v{text-align:right;position:relative}
+td.v>.t{position:relative;z-index:1}
+td.c{text-align:center}
+.db{position:absolute;left:0;top:4px;bottom:4px;border-radius:0 3px 3px 0}
+tr.l1>td{font-weight:700;background:var(--brand-soft)}
+tr.l1[tabindex],tr.l2[tabindex]{cursor:pointer}
+tr.l1[tabindex]:hover>td{background:rgba(var(--blue),.16)}
+tr.l2>td:first-child{padding-left:30px}
+tr.l2[tabindex]>td{font-weight:600}
+tr.l3>td:first-child{padding-left:54px}
+tr.zb>td{background:rgba(var(--blue),.035)}
+.chev{display:inline-block;width:16px;color:var(--brand)}
+tfoot td,tr.tot>td{font-weight:700;border-top:2px solid var(--ink);background:var(--surface)}
+tfoot tr+tr td{border-top:0}
+.neg{color:rgb(var(--bad))}
+.pos{color:rgb(var(--good))}
+.ico{font-size:10px;margin-right:5px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+small.m{color:var(--muted);font-size:11px;margin-left:5px}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px;max-width:92ch}
+.na{background:repeating-linear-gradient(135deg,transparent 0 6px,var(--line2) 6px 7px)}
+.diag{box-shadow:inset 0 0 0 2px rgba(var(--blue),.55)}
+.bul{display:flex;flex-direction:column;gap:3px;width:170px;margin-left:auto}
+.bul i{display:block;height:7px;border-radius:2px}
+.spk{vertical-align:middle}
+/* estratto */
+.ext td{border-bottom:1px solid var(--line2)}
+.ext td.h b{display:block;font-weight:600}
+.ext td.h span{display:block;color:var(--muted);font-size:12px}
+.ext tr.sub>td{background:rgba(var(--blue),.06);font-weight:600}
+.ext tr.fim>td{border-top:2px solid var(--ink);font-weight:700;background:var(--brand-soft)}
+.ok{color:rgb(var(--good));font-weight:700}
+.ko{color:rgb(var(--bad));font-weight:700}
+/* formattazione condizionale disattivata */
+.cf-off .cf{background:none!important}
+.cf-off .db,.cf-off .ico,.cf-off .dot,.cf-off .spk,.cf-off .bul{display:none}
+.cf-off .neg,.cf-off .pos,.cf-off .ok,.cf-off .ko{color:inherit}
+.cf-off .diag{box-shadow:none}
+</style>
+</head>
+<body>
+<div class="tri"></div>
+<header class="hero"><div class="wrap">
+<h1>Galleria di matrici</h1>
+<p class="lead">Modelli di matrice per pannelli Power BI: espandibili, con formattazione condizionale, per crediti e FSC, backtesting, vendite e rischio clienti. Lo scenario è fittizio: una società italiana che distribuisce auto e moda.</p>
+<ul class="facts"><li>9 modelli</li><li>Interattivi</li><li>Dati fittizi</li></ul>
+</div></header>
+<div class="tabsbar"><div class="wrap"><div class="tabs" role="tablist" aria-label="Matrici"><button role="tab" data-s="s1" aria-selected="false"><b>1</b>Espandibile</button><button role="tab" data-s="s2" aria-selected="false"><b>2</b>Utile per modello</button><button role="tab" data-s="s3" aria-selected="false"><b>3</b>Estratto conto</button><button role="tab" data-s="s4" aria-selected="false"><b>4</b>Backtesting</button><button role="tab" data-s="s5" aria-selected="false"><b>5</b>Roll rate</button><button role="tab" data-s="s6" aria-selected="false"><b>6</b>Coorti</button><button role="tab" data-s="s7" aria-selected="false"><b>7</b>Rischio clienti</button><button role="tab" data-s="s8" aria-selected="false"><b>8</b>Coorte × stock</button><button role="tab" data-s="s9" aria-selected="false"><b>9</b>Tre livelli</button></div></div></div>
+<main class="wrap">
+<div class="gbar">
+<label><input type="checkbox" id="cfToggle" checked> Formattazione condizionale</label>
+<div class="legend">
+<span><i class="sw" style="background:rgba(var(--good),.55)"></i>Favorevole</span>
+<span><i class="sw" style="background:rgba(var(--warn),.6)"></i>Attenzione</span>
+<span><i class="sw" style="background:rgba(var(--bad),.55)"></i>Sfavorevole</span>
+<span><i class="sw" style="background:rgba(var(--blue),.45)"></i>Intensità neutra</span>
+</div></div>
+<details class="ref"><summary>Note per il mercato italiano</summary><ul>
+<li><b>Terminologia.</b> FSC = Fondo svalutazione crediti. “Aging” indica lo scadenziario dei crediti; “coorte” indica il gruppo di partite con la stessa scadenza e “stock” il portafoglio aperto alla data di riferimento.</li>
+<li><b>Estratto conto.</b> Nel partitario clienti le nuove fatture vanno in Dare, mentre incassi, note di credito e storni vanno in Avere. Il saldo progressivo deve quadrare con il conto Crediti verso clienti della contabilità generale (Co.Ge.).</li>
+<li><b>Principi contabili.</b> Le società che applicano gli IFRS misurano la svalutazione con il modello della perdita attesa (IFRS 9); quelle che applicano i principi contabili italiani seguono l’OIC 15, con crediti iscritti al presumibile valore di realizzo. Conviene definire la base di riferimento prima di calibrare i tassi.</li>
+<li><b>Fasce di scaduto.</b> Le soglie a 30 e 90 giorni sono coerenti con le presunzioni dell’IFRS 9 (aumento significativo del rischio e default). I tassi mostrati sono illustrativi.</li>
+<li><b>Fiscalità.</b> La deducibilità di svalutazioni e perdite su crediti è disciplinata dagli artt. 101 e 106 del TUIR: da validare con la funzione fiscale prima di usare queste matrici per decisioni di bilancio.</li>
+<li><b>Quota assicurata.</b> È la parte di credito coperta da assicurazione crediti ed esclusa dalla base di copertura. Se non serve, la colonna può essere rimossa.</li>
+<li><b>Dati e marchi.</b> I nomi dei marchi di auto e di moda sono usati solo come esempio. I numeri sono generati in modo casuale e non rappresentano dati reali di nessuna azienda.</li>
+<li><b>Formati.</b> Importi in euro (€), virgola come separatore decimale, punto per le migliaia e mesi abbreviati in italiano (gen, feb, mar…).</li>
+</ul></details>
+<section id="s1" class="card" hidden>
+      <h2>Matrice espandibile con ultimo valore</h2>
+      <p class="why">Categoria e prodotto, con la somma del semestre e l’ultimo valore non vuoto, come il <code>LASTNONBLANK</code>. Quando l’ultimo mese è vuoto, la cella indica da quale mese proviene il valore. Cambia canale per vedere in azione la modalità di apertura: è la correzione che evita che la matrice si richiuda quando si clicca su un filtro.</p>
+      <div class="ctl" id="c1"></div>
+      <div class="tw"><table id="t1"></table></div>
+    </section>
+
+    <section id="s2" class="card" hidden>
+      <h2>Utile per famiglia</h2>
+      <p class="why">Marchio, modello e cinque metriche per mese, con colonna Totale quando c’è più di un mese. È lo stesso disegno della misura HTML dell’utile, con espandi, comprimi e copia. La % di utile diventa rossa sotto lo 0%, gialla fino al 3% e verde oltre, una soglia più prudente perché i margini netti della distribuzione auto in Italia sono contenuti.</p>
+      <div class="ctl">
+        <button class="btn" id="b2ex">Espandi</button>
+        <button class="btn" id="b2co">Comprimi</button>
+        <button class="btn" data-copy="t2">Copia in Excel</button>
+      </div>
+      <div class="tw"><table id="t2"></table></div>
+    </section>
+
+    <section id="s3" class="card" hidden>
+      <h2>Estratto conto del partitario clienti</h2>
+      <p class="why">Estratto conto nel formato italiano, con colonne Dare e Avere e saldo progressivo: parte dal saldo iniziale, registra incassi, note di credito e storni (Avere) e le nuove fatture (Dare), fino al saldo finale. La colonna Quadratura confronta il saldo del partitario con quello del conto Crediti verso clienti in contabilità generale (Co.Ge.). Usa il pulsante per simulare una discrepanza e vedere l’avviso.</p>
+      <div class="ctl">
+        <button class="btn" id="b3" aria-pressed="false">Simula una discrepanza</button>
+        <button class="btn" data-copy="t3">Copia in Excel</button>
+      </div>
+      <div class="tw"><table id="t3" class="ext"></table></div>
+    </section>
+
+    <section id="s4" class="card" hidden>
+      <h2>Backtesting per fascia</h2>
+      <p class="why">Saldo alla data di riferimento, quanto è stato incassato nella finestra e perdita osservata a confronto con il tasso applicato. La differenza in punti percentuali è divergente: rossa quando la perdita reale ha superato il tasso (accantonamento insufficiente) e verde quando è stata inferiore.</p>
+      <div class="ctl"><button class="btn" data-copy="t4">Copia in Excel</button></div>
+      <div class="tw"><table id="t4"></table></div>
+    </section>
+
+    <section id="s5" class="card" hidden>
+      <h2>Roll rate tra fasce</h2>
+      <p class="why">Dove è finito il saldo di ciascuna fascia da un mese all’altro. Il colore segue la direzione: verde per incassato o miglioramento, blu per chi è rimasto nella stessa fascia (con contorno) e rosso per chi è peggiorato. Passa il mouse per vedere il valore in euro.</p>
+      <div class="ctl">
+        <span class="lab">Mostra</span>
+        <button class="btn" id="b5p" aria-pressed="true">% di riga</button>
+        <button class="btn" id="b5v" aria-pressed="false">Valore (€ mln)</button>
+        <span class="sep"></span>
+        <button class="btn" data-copy="t5">Copia in Excel</button>
+      </div>
+      <div class="tw"><table id="t5"></table></div>
+    </section>
+
+    <section id="s6" class="card" hidden>
+      <h2>Coorti di recupero</h2>
+      <p class="why">Triangolo di coorti: ogni riga è il mese di scadenza e ogni colonna i mesi successivi alla scadenza. Le celle mostrano la % recuperata cumulata. Quelle tratteggiate non si sono ancora verificate.</p>
+      <div class="ctl"><button class="btn" data-copy="t6">Copia in Excel</button></div>
+      <div class="tw"><table id="t6"></table></div>
+    </section>
+
+    <section id="s7" class="card" hidden>
+      <h2>Rischio di insolvenza dei clienti</h2>
+      <p class="why">Clienti monitorati per segmento e fascia di rischio, con semaforo sulla % critica (verde sotto l’8%, giallo fino al 12%, rosso oltre), andamento delle ultime 8 settimane e variazione della settimana.</p>
+      <div class="ctl"><button class="btn" data-copy="t7">Copia in Excel</button></div>
+      <div class="tw"><table id="t7"></table></div>
+      <p class="note">Le soglie del semaforo sono illustrative e vanno calibrate sullo storico della società.</p>
+    </section>
+
+    <section id="s8" class="card" hidden>
+      <h2>Coorte × stock</h2>
+      <p class="why">Le due metodologie di backtesting affiancate per fascia. La barra blu è la perdita nella vista per coorte; quella gialla, nella vista per stock. La lettura riassume la differenza.</p>
+      <div class="ctl"><button class="btn" data-copy="t8">Copia in Excel</button></div>
+      <div class="tw"><table id="t8"></table></div>
+    </section>
+
+    <section id="s9" class="card" hidden>
+      <h2>Crediti × FSC su tre livelli</h2>
+      <p class="why">Business, marchio e fascia, con aging, quota assicurata e FSC su due mesi. I pulsanti di livello funzionano come “espandi di un livello” di Power BI. Le barre confrontano righe dello stesso livello.</p>
+      <div class="ctl">
+        <span class="lab">Apri fino a</span>
+        <button class="btn" data-lv="1">Livello 1</button>
+        <button class="btn" data-lv="2">Livello 2</button>
+        <button class="btn" data-lv="3">Livello 3</button>
+        <span class="sep"></span>
+        <button class="btn" data-copy="t9">Copia in Excel</button>
+      </div>
+      <div class="tw"><table id="t9"></table></div>
+    </section>
+  </main>
+<footer>Dati fittizi a scopo dimostrativo. Renata Balsani, Data Analyst e Business Intelligence.</footer>
+<script>
+
+/* ---------- utilità ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+var R=mulberry32(20261014);
+function rr(a,b){return a+(b-a)*R();}
+function fmt(d){return new Intl.NumberFormat('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:'always'});}
+var F0=fmt(0),F1=fmt(1),F2=fmt(2);
+function n0(v){return F0.format(v);}
+function n2(v){return F2.format(v);}
+function pc(v,d){return (d===2?F2:F1).format(v*100)+'%';}
+function pp(v){return (v>0?'+':'')+F1.format(v*100)+' p.p.';}
+function mi(v){return F1.format(v/1e6);}
+function eur(v){return '€ '+F2.format(v);}
+function cl(t){return Math.max(0,Math.min(1,t));}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function tint(c,t){return 'style="background:rgba(var(--'+c+'),'+(0.06+0.5*cl(t)).toFixed(3)+')"';}
+function bar(t,c){return '<span class="db" style="width:'+(cl(t)*100).toFixed(1)+'%;background:rgba(var(--'+(c||'blue')+'),.2)"></span>';}
+function td(html,cls,attr){return '<td class="v '+(cls||'')+'" '+(attr||'')+'><span class="t">'+html+'</span></td>';}
+function tdb(html,t,c){return '<td class="v"><span class="db" style="width:'+(cl(t)*100).toFixed(1)+'%;background:rgba(var(--'+(c||'blue')+'),.2)"></span><span class="t">'+html+'</span></td>';}
+function arrow(d,upIsGood){
+  if(Math.abs(d)<1e-9) return '';
+  var good=(d>0)===upIsGood;
+  return '<span class="ico '+(good?'pos':'neg')+'">'+(d>0?'▲':'▼')+'</span>';
+}
+function chev(open){return '<span class="chev">'+(open?'▾':'▸')+'</span>';}
+function bindToggle(table,fn){
+  table.addEventListener('click',function(e){var tr=e.target.closest('tr[data-k]');if(tr)fn(tr.getAttribute('data-k'));});
+  table.addEventListener('keydown',function(e){
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    var tr=e.target.closest('tr[data-k]');if(!tr)return;
+    e.preventDefault();var k=tr.getAttribute('data-k');fn(k);
+    var again=table.querySelector('tr[data-k="'+CSS.escape(k)+'"]');if(again)again.focus();
+  });
+}
+
+/* ---------- 1. Matrice espandibile con ultimo valore ---------- */
+var S1={
+  insts:['Boutique','E-commerce','Outlet'],
+  months:['gen/26','feb/26','mar/26','apr/26','mag/26','giu/26'],
+  cats:{
+    'Moda uomo':['Armani – Giacche','Zegna – Camicie','Brioni – Cappotti'],
+    'Moda donna':['Prada – Abiti','Max Mara – Cappotti','Missoni – Maglieria'],
+    'Calzature e pelletteria':['Gucci – Mocassini','Ferragamo – Scarpe','Bottega Veneta – Borse'],
+    'Accessori':['Versace – Foulard','Benetton – Sciarpe']
+  },
+  sel:'Tutti',mode:'lembrar',open:{'Moda uomo':true},data:{}
+};
+(function(){
+  var gap={};
+  Object.keys(S1.cats).forEach(function(c){S1.cats[c].forEach(function(p){var r=R();gap[p]=r<.22?5:(r<.32?4:6);});});
+  S1.insts.forEach(function(i){
+    var f=rr(.6,1.4);S1.data[i]={};
+    Object.keys(S1.cats).forEach(function(c){
+      S1.data[i][c]={};
+      S1.cats[c].forEach(function(p){
+        var b=rr(10e3,110e3)*f;
+        S1.data[i][c][p]=S1.months.map(function(m,k){return k>=gap[p]?null:b*(1+.035*k)*rr(.86,1.14);});
+      });
+    });
+  });
+})();
+function addArr(a,b){if(!a)return b.slice();return a.map(function(x,i){return x==null&&b[i]==null?null:(x||0)+(b[i]||0);});}
+function lastNB(a){for(var i=a.length-1;i>=0;i--)if(a[i]!=null)return i;return -1;}
+function prevNB(a,i){for(var j=i-1;j>=0;j--)if(a[j]!=null)return j;return -1;}
+function sumA(a){return a.reduce(function(s,x){return s+(x||0);},0);}
+function s1prod(c,p){var acc=null;(S1.sel==='Tutti'?S1.insts:[S1.sel]).forEach(function(i){acc=addArr(acc,S1.data[i][c][p]);});return acc;}
+function s1ultimo(a){
+  var i=lastNB(a);if(i<0)return '';
+  var j=prevNB(a,i),ar=j<0?'':arrow(a[i]-a[j],true);
+  var m=i<a.length-1?'<small class="m">'+S1.months[i].slice(0,3)+'</small>':'';
+  return ar+n2(a[i])+m;
+}
+function renderS1(){
+  var c1=document.getElementById('c1');
+  c1.innerHTML='<span class="lab">Canale</span>'+['Tutti'].concat(S1.insts).map(function(x){
+      return '<button class="btn" data-i="'+x+'" aria-pressed="'+(S1.sel===x)+'">'+x+'</button>';}).join('')+
+    '<span class="sep"></span><span class="lab">Al filtraggio</span>'+
+    [['lembrar','Mantieni le aperture'],['aberto','Apri tutto'],['fechado','Chiudi tutto']].map(function(m){
+      return '<button class="btn" data-m="'+m[0]+'" aria-pressed="'+(S1.mode===m[0])+'">'+m[1]+'</button>';}).join('')+
+    '<span class="sep"></span><button class="btn" data-copy="t1">Copia in Excel</button>';
+  var rows={},maxP=0,tot=null;
+  Object.keys(S1.cats).forEach(function(c){
+    rows[c]={prods:{},sum:null};
+    S1.cats[c].forEach(function(p){var a=s1prod(c,p);rows[c].prods[p]=a;rows[c].sum=addArr(rows[c].sum,a);maxP=Math.max(maxP,sumA(a));});
+    tot=addArr(tot,rows[c].sum);
+  });
+  var maxC=Math.max.apply(null,Object.keys(rows).map(function(c){return sumA(rows[c].sum);}));
+  var h='<thead><tr><th>Categoria / prodotto</th>'+S1.months.map(function(m){return '<th>'+m+'</th>';}).join('')+'<th>Somma</th><th>Ultimo valore</th></tr></thead><tbody>';
+  Object.keys(rows).forEach(function(c){
+    var r=rows[c],op=!!S1.open[c];
+    h+='<tr class="l1" tabindex="0" data-k="'+esc(c)+'" aria-expanded="'+op+'"><td>'+chev(op)+esc(c)+'</td>'+
+      r.sum.map(function(x){return td(x==null?'':n2(x));}).join('')+tdb(n2(sumA(r.sum)),sumA(r.sum)/maxC)+td(s1ultimo(r.sum))+'</tr>';
+    if(op){
+      Object.keys(r.prods).forEach(function(p){
+        var a=r.prods[p];
+        h+='<tr class="l2"><td>'+esc(p)+'</td>'+a.map(function(x){return td(x==null?'':n2(x));}).join('')+tdb(n2(sumA(a)),sumA(a)/maxP)+td(s1ultimo(a))+'</tr>';
+      });
+    }
+  });
+  h+='</tbody><tfoot><tr><td>Totale</td>'+tot.map(function(x){return td(x==null?'':n2(x));}).join('')+td(n2(sumA(tot)))+td(s1ultimo(tot))+'</tr></tfoot>';
+  document.getElementById('t1').innerHTML=h;
+}
+document.getElementById('c1').addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  if(b.dataset.i){
+    S1.sel=b.dataset.i;
+    if(S1.mode==='aberto')Object.keys(S1.cats).forEach(function(c){S1.open[c]=true;});
+    if(S1.mode==='fechado')S1.open={};
+    renderS1();
+  } else if(b.dataset.m){S1.mode=b.dataset.m;renderS1();}
+});
+bindToggle(document.getElementById('t1'),function(k){S1.open[k]=!S1.open[k];renderS1();});
+
+/* ---------- 2. Utile per famiglia ---------- */
+var S2={
+  cols:['lug/26','ago/26','set/26'],
+  marcas:{
+    'Fiat':['Panda','500 elettrica','Tipo'],
+    'Alfa Romeo':['Giulia','Stelvio'],
+    'Maserati':['Grecale','MC20','(Vuoto)']
+  },
+  fech:{},data:{}
+};
+var PR2={'Panda':15e3,'500 elettrica':28e3,'Tipo':21e3,'Giulia':52e3,'Stelvio':58e3,'Grecale':82e3,'MC20':240e3};
+var MET=['Q.tà totale (vol.)','Utile medio totale','Utile totale','Fatturato netto totale','% Utile'];
+Object.keys(S2.marcas).forEach(function(m){
+  S2.data[m]={};
+  S2.marcas[m].forEach(function(f){
+    var price=(PR2[f]||30e3)*rr(.97,1.03),mg=rr(-.02,.07);
+    S2.data[m][f]=S2.cols.map(function(){
+      var q=Math.round(rr(6,140)),fat=q*price*rr(.95,1.05),lu=fat*(mg+rr(-.015,.015));
+      return {q:q,fat:fat,lu:lu};
+    });
+  });
+});
+function s2sum(list){return list.reduce(function(a,x){return {q:a.q+x.q,fat:a.fat+x.fat,lu:a.lu+x.lu};},{q:0,fat:0,lu:0});}
+function s2cells(arr){var withT=arr.concat([s2sum(arr)]);return withT;}
+function s2metric(o,k){
+  if(k===0)return td(n0(o.q));
+  if(k===1)return td(eur(o.lu/o.q),o.lu<0?'neg':'');
+  if(k===2)return td(eur(o.lu),o.lu<0?'neg':'');
+  if(k===3)return td(eur(o.fat));
+  var p=o.lu/o.fat,c=p<0?'bad':(p<.03?'warn':'good'),t=p<0?Math.min(1,-p/.03)+.3:(p<.03?.5:cl(p/.09)+.15);
+  return td(pc(p,2),'cf',tint(c,t));
+}
+function renderS2(){
+  var nc=S2.cols.length+2;
+  var h='<thead><tr><th>Marchio / modello</th>'+S2.cols.map(function(c){return '<th>'+c+'</th>';}).join('')+'<th>Totale</th></tr></thead><tbody>';
+  var all=[];
+  Object.keys(S2.marcas).forEach(function(m){
+    var ab=!S2.fech[m];
+    h+='<tr class="l1" tabindex="0" data-k="'+esc(m)+'" aria-expanded="'+ab+'"><td colspan="'+nc+'">'+chev(ab)+esc(m)+'</td></tr>';
+    S2.marcas[m].forEach(function(f){
+      all.push(S2.data[m][f]);
+      if(!ab)return;
+      var cells=s2cells(S2.data[m][f]);
+      h+='<tr class="l2"><td colspan="'+nc+'"><b>'+esc(f)+'</b></td></tr>';
+      MET.forEach(function(nm,k){
+        h+='<tr class="l3'+(k%2?' zb':'')+'"><td>'+nm+'</td>'+cells.map(function(o){return s2metric(o,k);}).join('')+'</tr>';
+      });
+    });
+  });
+  var totCols=S2.cols.map(function(c,i){return s2sum(all.map(function(a){return a[i];}));});
+  var tc=s2cells(totCols);
+  h+='</tbody><tfoot>'+MET.map(function(nm,k){return '<tr><td>'+nm+'</td>'+tc.map(function(o){return s2metric(o,k);}).join('')+'</tr>';}).join('')+'</tfoot>';
+  document.getElementById('t2').innerHTML=h;
+}
+bindToggle(document.getElementById('t2'),function(k){if(S2.fech[k])delete S2.fech[k];else S2.fech[k]=true;renderS2();});
+document.getElementById('b2ex').onclick=function(){S2.fech={};renderS2();};
+document.getElementById('b2co').onclick=function(){Object.keys(S2.marcas).forEach(function(m){S2.fech[m]=true;});renderS2();};
+
+/* ---------- 3. Estratto dell’aging ---------- */
+var S3={div:false};
+function renderS3(){
+  var ini={q:3312480,v:224444050.94};
+  var mov=[
+    {d:'nell’anno',h:'Note di credito, sconti e annullamenti',s:'partite non idonee al backtesting',q:-27904,a:1741185.80},
+    {d:'nell’anno',h:'Incassi da clienti',s:'saldo di queste partite al 31/12/2025',q:-331208,a:28310437.30},
+    {d:'nell’anno',h:'Partite stornate senza incasso',s:'uscite dal sistema di origine',q:-219,a:25280.42},
+    {sub:true,h:'Partite del 31/12/2025 ancora aperte nel partitario',s:'saldo al 31/12/2025'},
+    {d:'nell’anno',h:'Rettifiche di valore',s:'pagamenti parziali e rettifiche',q:null,a:19448.65},
+    {d:'nell’anno',h:'Nuove fatture emesse',s:'',q:892115,dr:65904621.17}
+  ];
+  var q=ini.q,v=ini.v,h='<thead><tr><th class="l">Data</th><th class="l">Descrizione</th><th>Partite</th><th>Dare (€)</th><th>Avere (€)</th><th>Saldo (€)</th><th>Quadratura Co.Ge.</th></tr></thead><tbody>';
+  h+='<tr><td>31/12/2025</td><td class="h"><b>Saldo iniziale: partitario clienti al 31/12/2025</b><span>stesso valore del conto Crediti verso clienti in Co.Ge.</span></td>'+td(n0(q))+td('')+td('')+td(n2(v))+'<td class="c ok">✓</td></tr>';
+  mov.forEach(function(m){
+    if(m.sub){h+='<tr class="sub"><td></td><td class="h"><b>'+m.h+'</b><span>'+m.s+'</span></td>'+td(n0(q))+td('')+td('')+td(n2(v))+'<td class="c ok">✓</td></tr>';return;}
+    if(m.q!=null)q+=m.q;
+    v+=(m.dr||0)-(m.a||0);
+    h+='<tr><td>'+m.d+'</td><td class="h"><b>'+m.h+'</b>'+(m.s?'<span>'+m.s+'</span>':'')+'</td>'+
+      td(m.q==null?'':(m.q>0?'+':'')+n0(m.q),m.q==null?'':(m.q<0?'neg':'pos'))+td(m.dr?n2(m.dr):'')+td(m.a?n2(m.a):'')+td(n2(v))+'<td></td></tr>';
+  });
+  var coge=S3.div?v+294915.29:v,ok=Math.abs(coge-v)<.005;
+  h+='<tr class="fim"><td>30/09/2026</td><td class="h"><b>Saldo finale: partitario clienti al 30/09/2026</b><span>'+(ok?'stesso valore del conto Crediti verso clienti in Co.Ge.':'saldo in Co.Ge.: '+n2(coge)+' (differenza di '+n2(coge-v)+')')+'</span></td>'+
+    td(n0(q))+td('')+td('')+td(n2(v))+'<td class="c '+(ok?'ok':'ko cf')+'" '+(ok?'':tint('bad',.5))+'>'+(ok?'✓':'✗')+'</td></tr></tbody>';
+  document.getElementById('t3').innerHTML=h;
+}
+document.getElementById('b3').onclick=function(){S3.div=!S3.div;this.setAttribute('aria-pressed',S3.div);renderS3();};
+
+/* ---------- 4. Backtesting per fascia ---------- */
+function renderS4(){
+  var fx=['Non scaduto','Scaduti fino a 30 giorni','Scaduti da 31 a 60 giorni','Scaduti da 61 a 90 giorni','Scaduti da 91 a 120 giorni','Scaduti da 121 a 150 giorni','Scaduti da 151 a 180 giorni','Scaduti da 181 a 360 giorni','Scaduti da 361 a 390 giorni','Oltre 390 giorni'];
+  var sal=[22.768e6,8.976e6,7.584e6,6.592e6,5.76e6,3.584e6,.736e6,16.56e6,3.696e6,157.072e6];
+  var per=[.312,.371,.442,.488,.519,.566,.781,.884,.941,.986];
+  var tx=[.27,.13,.52,.68,.77,.83,.86,.97,1,1];
+  var maxS=Math.max.apply(null,sal),S=0,P=0,PR=0;
+  var h='<thead><tr><th>Fascia alla data di riferimento</th><th>Saldo rif. (€)</th><th>Incassato nella finestra (€)</th><th>In sospeso (€)</th><th>Perdita osservata</th><th>Tasso applicato</th><th>Differenza</th></tr></thead><tbody>';
+  fx.forEach(function(f,i){
+    var s=sal[i],pend=s*per[i],pg=s-pend,d=per[i]-tx[i];
+    S+=s;P+=pg;PR+=s*tx[i];
+    h+='<tr><td>'+f+'</td>'+tdb(n2(s),s/maxS)+td(n2(pg))+td(n2(pend))+td(pc(per[i]))+td(pc(tx[i]))+
+      td(arrow(d,false)+pp(d),'cf',tint(d>0?'bad':'good',Math.abs(d)/.3))+'</tr>';
+  });
+  var pT=(S-P)/S,tT=PR/S,dT=pT-tT;
+  h+='</tbody><tfoot><tr><td>Totale</td>'+td(n2(S))+td(n2(P))+td(n2(S-P))+td(pc(pT))+td(pc(tT))+td(arrow(dT,false)+pp(dT),'cf',tint(dT>0?'bad':'good',Math.abs(dT)/.3))+'</tr></tfoot>';
+  document.getElementById('t4').innerHTML=h;
+}
+
+/* ---------- 5. Roll rate tra fasce ---------- */
+var S5={modo:'p',fx:['Non scaduto','1–30','31–60','61–90','91–180','181–360','Oltre 360'],cols:['Non scaduto','1–30','31–60','61–90','91–180','181–360','Oltre 360','Pagato','Annullato']};
+(function(){
+  var base=[
+    [.56,.12,0,0,0,0,0,.30,.02],
+    [.03,0,.42,0,0,0,0,.52,.03],
+    [.02,0,0,.55,0,0,0,.40,.03],
+    [.01,0,0,0,.66,0,0,.30,.03],
+    [0,0,0,0,.62,.17,0,.18,.03],
+    [0,0,0,0,0,.80,.10,.07,.03],
+    [0,0,0,0,0,0,.93,.02,.05]
+  ];
+  S5.sal=[30.08e6,9.76e6,7.04e6,5.92e6,11.52e6,18.88e6,153.6e6].map(function(x){return x*rr(.9,1.1);});
+  S5.p=base.map(function(r){var a=r.map(function(x){return x*rr(.88,1.12);}),s=a.reduce(function(u,x){return u+x;},0);return a.map(function(x){return x/s;});});
+})();
+function renderS5(){
+  var h='<thead><tr><th>Fascia ad ago/26</th><th>Saldo di partenza (€ mln)</th>'+S5.cols.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>';
+  var tot=S5.cols.map(function(){return 0;}),ts=0;
+  S5.fx.forEach(function(f,i){
+    ts+=S5.sal[i];
+    h+='<tr><td>'+f+'</td>'+td(mi(S5.sal[i]));
+    S5.p[i].forEach(function(p,j){
+      var val=p*S5.sal[i];tot[j]+=val;
+      if(p<0.0005){h+=td('');return;}
+      var c=j>=7?(j===7?'good':'warn'):(j<i?'good':(j===i?'blue':'bad'));
+      var txt=S5.modo==='p'?pc(p):mi(val);
+      h+=td(txt,'cf'+(j===i?' diag':''),tint(c,p/.8)+' title="'+f+' → '+S5.cols[j]+': € '+n2(val)+'"');
+    });
+    h+='</tr>';
+  });
+  h+='</tbody><tfoot><tr><td>Portafoglio</td>'+td(mi(ts))+tot.map(function(v){return td(S5.modo==='p'?pc(v/ts):mi(v));}).join('')+'</tr></tfoot>';
+  document.getElementById('t5').innerHTML=h;
+}
+document.getElementById('b5p').onclick=function(){S5.modo='p';this.setAttribute('aria-pressed','true');document.getElementById('b5v').setAttribute('aria-pressed','false');renderS5();};
+document.getElementById('b5v').onclick=function(){S5.modo='v';this.setAttribute('aria-pressed','true');document.getElementById('b5p').setAttribute('aria-pressed','false');renderS5();};
+
+/* ---------- 6. Coorti di recupero ---------- */
+function renderS6(){
+  var saf=['gen/26','feb/26','mar/26','apr/26','mag/26','giu/26','lug/26','ago/26','set/26'],nM=9;
+  var h='<thead><tr><th>Coorte (scadenza)</th><th>Scaduto (€ mln)</th>';
+  for(var m=0;m<nM;m++)h+='<th>M'+m+'</th>';
+  h+='</tr></thead><tbody>';
+  var colSum=[],colN=[];
+  saf.forEach(function(s,i){
+    var cap=rr(.74,.87),k=rr(.5,.78),sv=rr(28.8e6,42.4e6),avail=nM-i;
+    h+='<tr><td>'+s+'</td>'+td(mi(sv));
+    for(var m=0;m<nM;m++){
+      if(m>=avail){h+='<td class="na"></td>';continue;}
+      var v=cap*(1-Math.exp(-k*(m+1)));
+      colSum[m]=(colSum[m]||0)+v;colN[m]=(colN[m]||0)+1;
+      h+=td(pc(v),'cf',tint('good',(v-.25)/.65));
+    }
+    h+='</tr>';
+  });
+  h+='</tbody><tfoot><tr><td>Media</td><td></td>';
+  for(var m2=0;m2<nM;m2++)h+=td(pc(colSum[m2]/colN[m2]));
+  h+='</tr></tfoot>';
+  document.getElementById('t6').innerHTML=h;
+}
+
+/* ---------- 7. Rischio di abbandono ---------- */
+function spark(arr){
+  var w=84,hgt=22,mn=Math.min.apply(null,arr),mx=Math.max.apply(null,arr),rg=mx-mn||1;
+  var pts=arr.map(function(v,i){return [(i*(w-6)/(arr.length-1)+3).toFixed(1),(hgt-3-(v-mn)/rg*(hgt-6)).toFixed(1)];});
+  var last=pts[pts.length-1],up=arr[arr.length-1]>arr[0];
+  return '<svg class="spk" width="'+w+'" height="'+hgt+'" viewBox="0 0 '+w+' '+hgt+'" aria-hidden="true"><polyline fill="none" stroke="rgb(var(--blue))" stroke-width="1.6" points="'+pts.map(function(p){return p.join(',');}).join(' ')+'"/><circle cx="'+last[0]+'" cy="'+last[1]+'" r="2.6" fill="rgb(var(--'+(up?'bad':'good')+'))"/></svg>';
+}
+function renderS7(){
+  var seg=['Concessionarie auto','Boutique moda','E-commerce','Grande distribuzione','Export'];
+  var h='<thead><tr><th>Segmento</th><th>Critico</th><th>Alto</th><th>Medio</th><th>Basso</th><th>Totale</th><th>% Critico</th><th>Ultime 8 settimane</th><th>Variazione nella settimana</th></tr></thead><tbody>';
+  var T=[0,0,0,0,0];
+  var rows=seg.map(function(s){
+    var tot=Math.round(rr(18e3,190e3)),c=rr(.05,.155),a=rr(.12,.2),m=rr(.25,.34);
+    var q=[Math.round(tot*c),Math.round(tot*a),Math.round(tot*m)];q.push(tot-q[0]-q[1]-q[2]);
+    var tr=[],x=c+rr(-.02,.02);for(var i=0;i<7;i++){tr.push(x);x=cl(x+rr(-.008,.008));}tr.push(c);
+    return {s:s,q:q,tot:tot,tr:tr};
+  });
+  var maxC=Math.max.apply(null,rows.map(function(r){return r.q[0];})),maxA=Math.max.apply(null,rows.map(function(r){return r.q[1];}));
+  rows.forEach(function(r){
+    var pcC=r.q[0]/r.tot,cor=pcC>=.12?'bad':(pcC>=.08?'warn':'good'),d=r.tr[7]-r.tr[6];
+    r.q.forEach(function(v,i){T[i]+=v;});T[4]+=r.tot;
+    h+='<tr><td>'+r.s+'</td>'+td(n0(r.q[0]),'cf',tint('bad',r.q[0]/maxC*.7))+td(n0(r.q[1]),'cf',tint('warn',r.q[1]/maxA*.6))+td(n0(r.q[2]))+td(n0(r.q[3]))+td(n0(r.tot))+
+      td('<span class="dot" style="background:rgb(var(--'+cor+'))"></span>'+pc(pcC))+
+      '<td class="c">'+spark(r.tr)+'</td>'+td(arrow(d,false)+pp(d))+'</tr>';
+  });
+  var pT=T[0]/T[4],corT=pT>=.12?'bad':(pT>=.08?'warn':'good');
+  h+='</tbody><tfoot><tr><td>Totale</td>'+T.map(function(v){return td(n0(v));}).join('')+td('<span class="dot" style="background:rgb(var(--'+corT+'))"></span>'+pc(pT))+'<td></td><td></td></tr></tfoot>';
+  document.getElementById('t7').innerHTML=h;
+}
+
+/* ---------- 8. Coorte × stock ---------- */
+function renderS8(){
+  var fx=['Non scaduto','Fino a 30 giorni','31–60 giorni','61–90 giorni','91–180 giorni','181–360 giorni','Oltre 360 giorni'];
+  var sf=[.073,.283,.457,.595,.802,.941,1],es=[.285,.379,.461,.491,.531,.893,.983];
+  var h='<thead><tr><th>Fascia</th><th>Perdita per coorte</th><th>Perdita sullo stock</th><th>Confronto</th><th>Differenza</th><th class="l">Lettura</th></tr></thead><tbody>';
+  fx.forEach(function(f,i){
+    var d=es[i]-sf[i],ad=Math.abs(d);
+    var leitura=ad<.05?'Allineate':(d>0?'Stock più alto':'Coorte più alta');
+    h+='<tr><td>'+f+'</td>'+td(pc(sf[i]))+td(pc(es[i]))+
+      '<td class="v"><div class="bul"><i style="width:'+(sf[i]*100)+'%;background:rgba(var(--blue),.75)"></i><i style="width:'+(es[i]*100)+'%;background:rgba(var(--warn),.85)"></i></div></td>'+
+      td(pp(d),'cf',tint(ad<.05?'good':'warn',ad/.3))+'<td>'+leitura+'</td></tr>';
+  });
+  h+='</tbody>';
+  document.getElementById('t8').innerHTML=h;
+}
+
+/* ---------- 9. Crediti × FSC su tre livelli ---------- */
+var S9={open:{'Auto':true},nodes:[],tot:null,
+  tree:{'Auto':['Fiat','Alfa Romeo','Maserati'],'Moda':['Abbigliamento','Calzature e pelletteria'],'Accessori':['Occhiali e gioielli']},
+  grupos:['Non scaduto','Scaduto fino a 180 giorni','Scaduto da 181 a 360 giorni','Oltre 360 giorni'],tx:[.035,.38,.9,1]};
+(function(){
+  function z(){return {aA:0,aB:0,pA:0,pB:0,cA:0,cB:0};}
+  function add(t,s){for(var k in t)t[k]+=s[k];}
+  var rng=[[6.4e6,25.6e6],[3.2e6,12.8e6],[1.6e6,6.4e6],[4.8e6,32e6]];
+  S9.tot=z();
+  Object.keys(S9.tree).forEach(function(n){
+    var n1={k:n,lv:1,label:n,v:z(),ch:[]};
+    S9.tree[n].forEach(function(b){
+      var fac=rr(.3,1.2),n2={k:n+'|'+b,lv:2,label:b,v:z(),ch:[]};
+      S9.grupos.forEach(function(g,i){
+        var aB=rr(rng[i][0],rng[i][1])*fac,aA=aB*rr(.93,1.06),pr=rr(.04,.11);
+        var v={aA:aA,aB:aB,pA:aA*pr,pB:aB*pr,cA:aA*(1-pr)*Math.min(1,S9.tx[i]*rr(.96,1.03)),cB:aB*(1-pr)*Math.min(1,S9.tx[i]*rr(.96,1.03))};
+        n2.ch.push({k:n2.k+'|'+g,lv:3,label:g,v:v,ch:[]});add(n2.v,v);
+      });
+      n1.ch.push(n2);add(n1.v,n2.v);
+    });
+    S9.nodes.push(n1);add(S9.tot,n1.v);
+  });
+  S9.max={1:{a:0,d:0},2:{a:0,d:0},3:{a:0,d:0}};
+  (function walk(list){list.forEach(function(n){var m=S9.max[n.lv];m.a=Math.max(m.a,n.v.aB);m.d=Math.max(m.d,Math.abs(n.v.cB-n.v.cA));walk(n.ch);});})(S9.nodes);
+})();
+function s9cells(v,lv){
+  var d=Math.round((v.cB-v.cA)/1e5)*1e5,res=v.cB/(v.aB-v.pB),m=lv?S9.max[lv]:null;
+  return td(mi(v.aA))+(m?tdb(mi(v.aB),v.aB/m.a):td(mi(v.aB)))+td(mi(v.pB))+td(mi(v.cA))+td(mi(v.cB))+
+    td(arrow(d,false)+(d>0?'+':'')+mi(d===0?0:d),m?'cf':'',m?tint(d>0?'bad':'good',Math.abs(d)/m.d*.7):'')+
+    td(pc(res),'cf',tint('warn',(res-.2)/.8));
+}
+function renderS9(){
+  var h='<thead><tr><th>Business / marchio / fascia</th><th>Aging ago/26</th><th>Aging set/26</th><th>Quota assicurata set/26</th><th>FSC ago/26</th><th>FSC set/26</th><th>Variazione FSC</th><th>% Copertura set/26</th></tr></thead><tbody>';
+  (function walk(list){
+    list.forEach(function(n){
+      var can=n.ch.length>0,op=!!S9.open[n.k];
+      h+='<tr class="l'+n.lv+'"'+(can?' tabindex="0" data-k="'+esc(n.k)+'" aria-expanded="'+op+'"':'')+'><td>'+(can?chev(op):'')+esc(n.label)+'</td>'+s9cells(n.v,n.lv)+'</tr>';
+      if(can&&op)walk(n.ch);
+    });
+  })(S9.nodes);
+  h+='</tbody><tfoot><tr><td>Totale (€ mln)</td>'+s9cells(S9.tot,0)+'</tr></tfoot>';
+  document.getElementById('t9').innerHTML=h;
+}
+bindToggle(document.getElementById('t9'),function(k){S9.open[k]=!S9.open[k];renderS9();});
+document.querySelectorAll('[data-lv]').forEach(function(b){
+  b.onclick=function(){
+    var lv=Number(b.dataset.lv);S9.open={};
+    (function walk(list){list.forEach(function(n){if(n.lv<lv&&n.ch.length){S9.open[n.k]=true;walk(n.ch);}});})(S9.nodes);
+    renderS9();
+  };
+});
+
+/* ---------- copia in Excel (ciò che è visibile) ---------- */
+function textoTabela(id){
+  var t=document.getElementById(id),lin=[];
+  t.querySelectorAll('tr').forEach(function(tr){
+    var cel=[];
+    Array.prototype.forEach.call(tr.children,function(c){
+      var k=c.cloneNode(true);
+      k.querySelectorAll('.ico,.chev,small,.spk,.db,.dot,.bul').forEach(function(x){x.remove();});
+      cel.push(k.textContent.replace(/€\s?/g,'').replace(/\s+/g,' ').trim());
+    });
+    lin.push(cel.join('\t'));
+  });
+  return lin.join('\r\n');
+}
+function copiar(txt){
+  var ok=false;
+  try{var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();ok=document.execCommand('copy');document.body.removeChild(ta);}catch(e){ok=false;}
+  if(!ok){try{navigator.clipboard.writeText(txt);ok=true;}catch(e){ok=false;}}
+  return ok;
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-copy]');if(!b)return;
+  var orig=b.textContent;
+  b.textContent=copiar(textoTabela(b.dataset.copy))?'Copiato':'Copia bloccata';
+  setTimeout(function(){b.textContent=orig;},1800);
+});
+
+/* ---------- formattazione condizionale e indice ---------- */
+document.getElementById('cfToggle').onchange=function(){document.body.classList.toggle('cf-off',!this.checked);};
+var tabs=[].slice.call(document.querySelectorAll('.tabs button')),secs=[].slice.call(document.querySelectorAll('main section'));
+function go(id,scroll){
+  if(!document.getElementById(id))id='s1';
+  secs.forEach(function(x){x.hidden=x.id!==id;});
+  tabs.forEach(function(b){var on=b.dataset.s===id;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;if(on&&scroll)b.scrollIntoView({block:'nearest',inline:'center'});});
+  try{history.replaceState(null,'','#'+id);}catch(e){}
+}
+tabs.forEach(function(b){b.onclick=function(){go(b.dataset.s,true);};});
+document.querySelector('.tabs').addEventListener('keydown',function(e){
+  var i=tabs.indexOf(document.activeElement);if(i<0)return;
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();var j=(i+(e.key==='ArrowRight'?1:tabs.length-1))%tabs.length;tabs[j].focus();go(tabs[j].dataset.s,true);}
+});
+renderS1();renderS2();renderS3();renderS4();renderS5();renderS6();renderS7();renderS8();renderS9();
+
+go((location.hash||'#s1').slice(1));
+</script>
+</body>
+</html>
